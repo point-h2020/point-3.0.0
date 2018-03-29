@@ -1,0 +1,41 @@
+This is the final release of the POINT IP-over-ICN platform
+See various documentations in doc/.
+
+See also: https://github.com/point-h2020/point-3.0.0
+
+If you use this work for a publication it would be good if you could
+cite the following publications:
+
+@inproceedings{Reed2016,
+author      =   {M. J. Reed and M. Al-Naday and N. Thomos and D. Trossen and G. Petropoulos and S. Spirou},
+booktitle   =   {2016 IEEE International Conference on Communications (ICC)},
+title       =   {Stateless multicast switching in software defined networks},
+year        =   {2016},
+pages       =   {1-7},
+doi         =   {10.1109/ICC.2016.7511036},
+month       =   {May}
+};
+@inproceedings{Trossen2015,
+author      =   {D. Trossen and M. J. Reed and J. Riihij\"arvi and M. Georgiades and N. Fotiou and G. Xylomenos},
+booktitle   =   {2015 European Conference on Networks and Communications (EuCNC)},
+title       =   {IP over ICN - The better IP?},
+year        =   {2015},
+pages       =   {413-417},
+doi         =   {10.1109/EuCNC.2015.7194109},
+month       =   {June}
+};
+@inproceedings{DBLP:conf/networking/ParisisTS13,
+author    = {George Parisis and
+Dirk Trossen and
+Dimitris Syrivelis},
+title     = {Implementation and evaluation of an information-centric network},
+booktitle = {{IFIP} Networking Conference, 2013, Brooklyn, New York, USA, 22-24
+May, 2013},
+pages     = {1--9},
+year      = {2013},
+crossref  = {DBLP:conf/networking/2013},
+url       = {http://ieeexplore.ieee.org/xpl/articleDetails.jsp?arnumber=6663525},
+timestamp = {Sat, 01 Feb 2014 15:37:20 +0100},
+biburl    = {http://dblp.uni-trier.de/rec/bib/conf/networking/ParisisTS13},
+bibsource = {dblp computer science bibliography, http://dblp.org}
+}

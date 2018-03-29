@@ -1,0 +1,15 @@
+= INSTALLATION =
+
+In order to build the shared library and install it on your system build
+Blackadder first and then follow those commands: 
+
+~$ make
+~$ sudo make install
+
+
+= UNINSTALL =
+The following command removes all object files from /usr/lib/ and
+the corresponding header filers from /usr/local/lib/bampers. The local
+lib/bampers directory is also clean (make clean):
+
+~$ sudo make uninstall

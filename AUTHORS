@@ -1,0 +1,115 @@
+Original authors
+================
+
+George Parisis          <georgios.parisis@cl.cam.ac.uk>
+Architectural design. Implementation of Click elements, topology manager,
+deployment tool, API libraries and sample applications for C++.
+
+Dirk Trossen            <dirk.trossen@cl.cam.ac.uk>
+Architectural design.
+
+
+Contributors of PURSUIT
+=======================
+
+Jimmy Kjällman          <jimmy.kjallman@nomadiclab.com>
+Fixes, FreeBSD and Mac OS X porting, SWIG-based language bindings,
+C binding, sample applications for Python, Ruby, Java and C, etc.
+
+Dimitris Syrivelis      <jsyr@inf.uth.gr>
+Deployment tool, PlanetLab support, Click elements.
+
+Christos Tsilopoulos    <tsilochr@aueb.gr>
+Java bindings and Java-based voice application.
+
+Charilaos Stais         <stais@aueb.gr>
+Java-based voice application.
+
+Ben Tagger              <ben.tagger@cl.cam.ac.uk>
+Video streaming GUI demo application.
+
+Mays Al-Naday           <mfhaln@essex.ac.uk>
+Multi-layer deployment. Resiliency.
+
+Yi-Ching Liao           <yliao@cs.helsinki.fi>
+PLA support.
+
+Dmitrij Lagutin         <dmitrij.lagutin@hiit.fi>
+PLA support.
+
+Nikos Fotiou            <fotiou@aueb.gr>
+Access control implementation.
+
+Martin Reed				<mjreed@essex.ac.uk>
+Traffic Engineering.
+
+Andreas Bontozoglou
+QoS.
+
+Evans Mungai		<evans.mungai@aalto.fi>
+Additions to C API.
+
+Contributors of POINT Cycle-1
+=============================
+
+Martin J Reed   <mjreed@essex.ac.uk>
+Fixed the publisher behaviour, ICN-SDN forwardings
+
+Mays AL-Naday   <mfhaln@essex.ac.uk>
+Extended Blackadder, user Library, TM and RM for IP-over-ICN comms,
+ICN-SDN forwarding, SDN in the deployment tool, samples applciations, Fixes, ..etc.
+
+Sebastian Robitzsch  <Sebastian.Robitzsch@InterDigital.com>
+Added the NAP for IP-over-ICN comms.
+
+Mohammed Al-Khalidi <mshawk@essex.ac.uk>
+Extended support for NS3
+
+George Petropoulos <geopet@intracom-telecom.com>
+Extended the deployment tool with the dynamic support for addition/deletion of nodes
+
+Contributors of POINT Cycle-2
+=============================
+
+Mays AL-Naday   <mfhaln@essex.ac.uk>
+Extended Blackadder, user Library, TM and RM for HTTP-over-ICN comms,
+ICN-SDN forwarding, SDN in the deployment tool, samples applications, fixes, ..etc.
+
+Sebastian Robitzsch  <Sebastian.Robitzsch@InterDigital.com>
+Added the NAP for IP/HTTP-over-ICN comms, LTP, Monitoring framework, fixes.
+
+George Petropoulos <geopet@intracom-telecom.com>
+SDN POINT application, ICN-SDN application, ODL deployment.
+
+Islam Hasan <hasan.islam@aalto.fi>
+CoAP Forward/Reverse Proxy
+
+eero hakala <eero.k.hakala@gmail.com>
+Documentation of HowTo install an example CoAP servers
+
+Contributors of POINT Cycle-2
+=============================
+
+Mays AL-Naday	<mfhaln@essex.ac.uk>
+Extended Blackadder with HTTP default gateway support, extend the deployment tool and bug fixes. Added documentation
+
+Sebastian Robitzsch	<Sebastian.Robitzsch@InterDigital.com>
+Support the NAP extension, bug fixes, improvements and extension of the NAP and the monitoring framework. Added documentation
+
+Janne Riihijärvi	<jar@inets.rwth-aachen.de>
+Extend Blackadder with RV/TM monitoring application
+
+Yannis Thomas	<thomasi@aueb.gr>
+Extend Blackadder with Control Plane Reliability. Added documentation
+
+Nikos Fotiou	<fotiou@aueb.gr>
+Added new CoAP handler and CoAP documentation
+
+Maria-Evgenia Xezonaki	<maxez@intracom-telecom.com>
+Updated SDN documentation
+
+Alexandros Phinikarides	<AlexandrosP@prime-tel.com>
+Added IGMP documentation
+
+Lagutin Dmitrij	<dmitrij.lagutin@aalto.fi>
+Added CoAP documentation

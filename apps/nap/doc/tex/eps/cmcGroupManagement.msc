@@ -1,0 +1,21 @@
+# msc-gen -T eps -i cmcGroupManagement.msc -o cmcGroupManagement.eps --nocopyright
+
+msc=round_green;
+numbering=yes;
+hscale="3";
+cnap: cNAP;
+snap: sNAP;
+server: Web Server;
+cnap -> snap:PUBLISH_DATA_iSUB\-\nHTTP Request;
+snap >> snap:Add NID\_cNAP\+ to potential\nCMC group;
+snap -> server: HTTP Request;
+
+server -> snap: HTTP Response\nFragment 1;
+snap >> snap: Create CMC group from\nlist of potential NIDs;
+snap -> cnap: PUBLISH_DATA\n\_HTTP Response;
+server -> snap: HTTP Response\nFragment 2;
+
+snap >> snap: Get CMC group;
+snap -> cnap: PUBLISH_DATA\n\_HTTP Response;
+snap >> snap: Close CMC group;
+

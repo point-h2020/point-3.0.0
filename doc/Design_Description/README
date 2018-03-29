@@ -1,0 +1,18 @@
+﻿This directory should contain documents that describes the specifications of the POINT platform and its components/extensions,  this may include:
+Notably, this is not only for the purpose of a particular deliverable but to collate all documentations, that are already on Google or will be written next using Google online tools
+* Core network
+   * SDN
+* APIs & Libs
+   * The ICN API specification
+   * The ICN-SDN API specification
+   * MOLY specifications
+   * BAMPERS
+   * MAPI
+* Apps
+   * NAP 
+   * TM
+   * Monitoring Server
+   * Monitoring Agent
+   * ICN-SDN Bootstrapping application 
+* Network Deployment and Management
+   * Anything related to the deployment tool or mininet

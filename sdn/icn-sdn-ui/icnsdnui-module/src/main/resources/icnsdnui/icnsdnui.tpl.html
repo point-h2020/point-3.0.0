@@ -1,0 +1,13 @@
+<div class="container topoMain">
+  <div class="row">
+        <div class="col-md-12 buttons">
+            <button class="btn btn-primary" ng-click="createTopology()">Reload</button>
+            <button class="btn btn-primary" ng-click="initBootstrapping()">Bootstrap Topology</button>
+            <button class="btn btn-primary" ng-click="initMonitoring()">Enable Monitor</button>
+            <button class="btn btn-warning" ng-click="stopMonitoring()">Disable Monitor</button>
+        </div>
+  </div>
+      <div class="row">
+          <network-simple class="col-md-12" network-data="networkData"></network-simple>
+    </div>
+</div>

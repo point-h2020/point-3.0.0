@@ -1,0 +1,95 @@
+package eu.point.tmsdn.impl;
+
+option java_package = "eu.point.tmsdn.impl";
+option java_outer_classname = "TmSdnMessages";
+
+message TmSdnMessage {
+	enum TmSdnMessageType {
+		LS = 0;
+		TM = 1;
+		RR = 2;
+		RO = 3;
+		FM = 4;
+		GM = 5;
+	}
+
+	message LinkStatusMessage {
+		enum LSMType {
+			ADD = 0;
+			RMV = 1;
+		}
+
+		required LSMType lsmType = 1;
+		required string nodeID1 = 2;
+		required string nodeID2 = 3;	
+		optional int32 nodeConnector = 4;
+	}
+
+	message TrafficMonitoringMessage {
+		required string nodeID1 = 1;
+		required string nodeID2 = 2;	
+		required int64 packetsReceived = 3;
+		required int64 packetsTransmitted = 4;	
+		required int64 bytesReceived = 5;
+		required int64 bytesTransmitted = 6;
+		optional int32 nodeConnector = 7;
+
+		required int64 receiveErrors = 8;
+	        required int64 transmitErrors = 9;
+        	required int64 receiveDrops = 10;
+        	required int64 transmitDrops = 11;
+                required string portName = 12;
+	}
+
+	message ResourceRequestMessage {
+		message RecourceRequest {
+			required string srcNode = 1;
+			required string dstNode = 2;
+			optional string srcMac = 3;
+			optional int32 nodeConnector = 4;
+		}
+		repeated RecourceRequest requests = 1;
+	}
+	
+	message ResourceOfferMessage {
+		message RecourceOffer {
+			required string nid = 1;
+			required string lid = 2;
+			required string ilid = 3;
+			optional string srcMac = 4;
+		}
+		repeated RecourceOffer offers = 1;
+	}
+
+	message FlowMonitoringMessage {
+	    required string nodeID = 1;
+	    required int64 packets = 2;
+	    required int64 bytes = 3;
+	    required string src_ipv6 = 4;
+	    required string dst_ipv6 = 5;
+	    required int32 table = 6;
+    }
+
+    message BucketMonitor {
+        required int64 bucket = 1;
+        required int64 packets = 2;
+        required int64 bytes = 3;
+    }
+
+    message GroupMonitoringMessage {
+        required string nodeID = 1;
+        required int64 packets = 2;
+        required int64 bytes = 3;
+        required int64 group = 4;
+        optional int32 port = 5;
+        repeated BucketMonitor buckets = 6;
+    }
+	
+	optional LinkStatusMessage linkStatusMessage = 1;
+	optional TrafficMonitoringMessage trafficMonitoringMessage = 2;
+	optional ResourceRequestMessage resourceRequestMessage = 3;
+	optional ResourceOfferMessage resourceOfferMessage = 4;
+	optional FlowMonitoringMessage flowMonitoringMessage = 5;
+	optional GroupMonitoringMessage groupMonitoringMessage = 6;
+	required TmSdnMessageType type = 7;
+}

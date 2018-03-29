@@ -1,0 +1,92 @@
+Changes in Blackadder v0.3:
+- Multi-interface fixes
+- Kernel-mode fixes
+- Raw IP socket fixes
+- Regenerate same LIDs in deployment
+- Loop-prevention fixes
+- FID length increase
+- Fixes to examples
+- Java voice app fixes/improvements
+- Blackadder constructor is protected
+- Event handling fix
+- Non-blocking Python and Ruby API fixes
+- Improved fragmentation support
+- Documentation improvements
+
+Changes in Blackadder v0.3:
+- ns-3 support
+- FreeBSD kernel port
+- Linux 3.2 kernel support
+- Packet-level authentication support
+- Multi-layer support in the deployment tool
+- Local deployment options
+- Deployment for different operating systems
+- igraph 0.6 support
+- Non-blocking SWIG Java API
+- Common Makefile
+- Access control implementation
+- More examples
+- Various fixes and improvements
+- Documentation updated
+
+Changes in Blackadder v0.3.1:
+- Topology manager bug fix
+
+Changes in Blackadder v0.4:
+- Topology management extensions
+  - Resiliency
+  - Traffic engineering
+  - QoS
+- Rendezvous information visualization
+- Fixes etc.
+
+Changes in POINT Cycle-1
+========================
+- Fixed publisher behaviour
+- Added ICN-SDN forwarding support in Blackadder
+- Added the unicast semantics support in Blackadder, TM and RM
+- Added the NAP for IP-over-ICN communications
+- Extended TM with IP-over-ICN support for resiliency
+- Refactored and extended the RM to support ICN and IP-over-ICN resilience
+- Extended TM with Path Management
+- Extended support for NS3-23
+- Extended the deployment tool to support dyanmic addition/deletion of a node from the network
+- Extended the deployment tool to support ICN-SDN deployment
+- various bug fixes and code enhancements
+
+Changes in POINT Cycle-2
+========================
+- New HTTP handler and LTP in the NAP
+- Extended NAP with support of surrogacy
+- New monitoring capability in NAP
+- New type of packet: PUBLISH_DATA_iSUB
+- Reinstate packet type field to distinguish PUBLISH_DATA from PUBLISH_DATA_iSUB
+- Handling PUBLISH_DATA_iSUB for HTTP in Blackadder and TM
+- New <NODEID, UNICAST_FID> state
+- In-node construction of MULTICAST_FID for HTTP
+- New NetLink socket (MGMNetLink) for MAPI
+- Handling MAPI requests/settings
+- New 'status' configuration of node connectivity
+- New Publish_data_isub() in lib
+- New monitoring framework having: Libs (BAMPERS/MOLY), Apps (MONA/MOOSE)
+- New Management API (MAPI) for node management
+- Improved Path Management support in TM and Blackadder using MAPI
+- ICN-SDN application
+- SDN POINT application in OpenDayLight
+- Extended deployment with: zones and ODL deployment
+- Mininet deployment
+- General Bug fix and performance improvment
+- revised Link State Monitor
+- Revised and improved Documentation
+
+Changes in POINT Final Release
+========================
+- Extended Blackadder and NAP to support HTTP default gateway as 'wildcard' match
+- Extended Blackadder with new RV/TM monitoring application 
+- Extended Blackadder with new Control Plane Reliability element
+- Add new CoAP handler
+- Extend the deployment tool to allow for using group destination MAC address for SDN, to distinguish POINT traffic
+- Extend the monitoring framework to collect new data points
+- Bug fixes and operation improvements in Blackadder, the NAP and the monitoring framework
+- Extended documentation
+

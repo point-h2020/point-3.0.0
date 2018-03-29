@@ -1,0 +1,33 @@
+{
+  "USER": "point",
+  "ROOT_DIR": "/home/point/blackadder/",
+  "READ": {
+    "icn_mn": "deployment/mininet_v0.2/icn_mn.py",
+    "exit_mn": "testbed_scripts/exit_mn.sh",
+    "naps": "testbed_scripts/naps/",
+    "end_points": "testbed_scripts/end_points/"
+  },
+  "MANAGEMENT_NET": "192.168.133.35/24",
+  "DATA_NET": "172.17.1.1/24",
+  "EXTERNAL_NET": "192.168.132.0/24",
+  "clusters": [
+    {
+      "cluster_ip": "192.168.132.194",
+      "topology": "dag",
+      "number_pairs": 2,
+      "switch_type": "ovs",
+      "controller_ip": "192.168.132.195",
+      "management_if": "eth2",
+      "data_if":"eth3"
+    },
+    {
+      "cluster_ip":  "192.168.132.192",
+      "topology": "dag",
+      "number_pairs": 2,
+      "switch_type": "ovs",
+      "controller_ip": "192.168.132.195",
+      "management_if": "eth2",
+      "data_if":"eth3"
+    }
+  ]
+}

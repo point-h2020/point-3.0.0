@@ -1,0 +1,43 @@
+network-simple .graph-frame{
+      background-color: white
+}
+
+.buttons {
+	text-align: center;
+	margin-top: 50px;
+	margin-bottom: 75px;
+}
+
+.boxTitles h3 {
+	text-align: center;
+}
+
+.boxes .textBox {
+	margin: auto;
+	height: 300px;
+	width: 50%;
+}
+
+#inputBox {
+	width: 100%;
+	color: #0F0F0F;
+}
+
+#receivedMsgBox {
+	color: #0F0F0F;	
+}
+
+.container.topoMain {
+	width: 100%;
+}
+
+.graph-frame {
+	margin: auto;
+}
+
+.btn-xlarge {
+    padding: 18px 28px;
+    font-size: 22px; //change this to your desired size
+    line-height: normal;
+    border-radius: 8px;
+}

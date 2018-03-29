@@ -1,0 +1,11 @@
+CoAP over ICN implementation.
+
+custom coap implementation: coap.cpp coap.hpp
+coap proxy module: coap_proxy.c coap_proxy.h
+ICN communication: coaphandler.cc coaphandler.hh
+coap observe state management: subscription.c subscription.h
+coap endpoint state management: clients.c clients.h
+log information implementation: logger.c logger.h
+
+config.txt: contains the mapping between CoAP names and 
+CoAP servers' IP addresses. 

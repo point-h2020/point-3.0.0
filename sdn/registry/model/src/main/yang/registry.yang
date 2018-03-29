@@ -1,0 +1,103 @@
+module registry {
+    yang-version 1;
+    namespace "urn:eu:point:registry";
+    prefix registry;
+
+	import opendaylight-inventory {prefix inv; revision-date 2013-08-19;}
+    import yang-ext {prefix ext; revision-date "2013-07-09";}
+
+    description "Registry configuration";
+
+    revision "2015-07-22" {
+        description "Initial version.";
+    }
+
+
+    container node-registry {
+        list node-registry-entry {
+            key "noneName";
+
+            leaf noneName {
+                type string;
+            }
+            leaf noneId {
+                type string;
+            }
+        }
+    }
+
+    container link-registry {
+        list link-registry-entry {
+            key "linkName";
+
+            leaf linkName {
+                type string;
+            }
+            leaf linkId {
+                type string;
+            }
+            leaf odlLinkID{
+                type string;
+            }
+        }
+    }
+
+    container node-connector-registry {
+        list node-connector-registry-entry {
+            key "noneConnectorName";
+
+            leaf noneConnectorName {
+                type string;
+            }
+            leaf srcNode {
+                type string;
+            }
+            leaf dstNode {
+                type string;
+            }
+        }
+    }
+
+    container flow-registry {
+        list flow-registry-entry {
+            key "edgeNodeConnector";
+
+            leaf edgeSwitch {
+                type string;
+            }
+            leaf edgeNodeConnector {
+                type string;
+            }
+            leaf tableNum{
+                type int32;
+            }
+        }
+    }
+
+    container link-info-registry {
+        list link-info-registry-entry {
+            key "lid";
+
+            leaf lid {
+                type string;
+            }
+            leaf edgeNodeConnector {
+                type string;
+            }
+        }
+    }
+
+    container groups-registry {
+        list groups-registry-entry {
+            key "edgeNodeConnector";
+
+            leaf groupId {
+                type int32;
+            }
+            leaf edgeNodeConnector {
+                type string;
+            }
+        }
+    }
+
+}

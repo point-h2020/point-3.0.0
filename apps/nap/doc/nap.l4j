@@ -1,0 +1,79 @@
+################################################################################
+# Logging configuration file for the NAP software
+#
+# Author: Sebastian Robitzsch <sebastian.robitzsch@interdigital.com>
+#
+################################################################################
+# Set the root logger to TRACE and allow stdout and file logging
+log4j.rootLogger=info, stdout, R
+
+################################################################################
+# General Settings for stdout
+log4j.appender.stdout = org.apache.log4j.ConsoleAppender
+log4j.appender.stdout.layout = org.apache.log4j.PatternLayout
+log4j.appender.stdout.layout.ConversionPattern = %d{HH:mm:ss} %5p %C - %m%n
+
+################################################################################
+# Log file configurations
+#
+log4j.appender.R = org.apache.log4j.RollingFileAppender
+log4j.appender.R.File = /var/log/nap.log
+log4j.appender.R.MaxFileSize = 10MB
+log4j.appender.R.MaxBackupIndex = 0
+log4j.appender.R.layout = org.apache.log4j.PatternLayout
+log4j.appender.R.layout.ConversionPattern = %d %5p %C::%M() %m%n
+
+################################################################################
+# Configure classes and their logging level
+#
+# Possible debugging levels:
+# FATAL
+# WARN
+# INFO
+# DEBUG
+# TRACE
+
+# APIs
+log4j.logger.api.napsa = INFO
+
+# NAP demux, internals and ICN handler
+log4j.logger.configuration = INFO
+log4j.logger.demux = INFO
+log4j.logger.vdemux = INFO
+log4j.logger.icn = INFO
+log4j.logger.ipsocket = INFO
+
+# Monitoring
+log4j.logger.monitoring.collector = INFO
+log4j.logger.monitoring.statistics = INFO
+
+# ICN Namespaces
+log4j.logger.namespaces.ip = INFO
+log4j.logger.namespaces.mcast = INFO
+log4j.logger.namespaces.http = INFO
+log4j.logger.namespaces.management = INFO
+log4j.logger.namespaces.management.dnslocal = INFO
+
+# Transport protocols
+log4j.logger.transport.unreliable = INFO
+log4j.logger.transport.lightweight = INFO
+
+# Proxies
+log4j.logger.proxies.http = INFO
+log4j.logger.proxies.http.dnsresolutions = INFO
+log4j.logger.proxies.http.headerparser = INFO
+log4j.logger.proxies.http.surrogatetcpclient = INFO
+log4j.logger.proxies.http.tcpclient = INFO
+log4j.logger.proxies.http.tcpserver = INFO
+
+# Rules Engines
+log4j.logger.rulesengines.httpproxy = INFO
+
+# Buffer Cleaners
+log4j.logger.cleaners.ipbuffer = INFO
+log4j.logger.cleaners.httpbuffer = INFO
+log4j.logger.cleaners.ltpbuffer = INFO
+log4j.logger.cleaners.ltpreversecid = INFO
+
+# Traffic control
+log4j.logger.trafficcontrol.dropping = INFO

@@ -1,0 +1,57 @@
+module monitoring-impl {
+    yang-version 1;
+    namespace "urn:eu:point:monitoring:impl";
+    prefix "monitoring-impl";
+
+    import config { prefix config; revision-date 2013-04-05; }
+    import opendaylight-md-sal-binding { prefix mdsal; revision-date 2013-10-28; }
+
+    description
+        "This module contains the base YANG definitions for monitoring-impl.";
+
+    revision "2015-07-22" {
+        description
+            "Initial revision.";
+    }
+
+    // This is the definition of the service implementation as a module identity
+    identity monitoring-impl {
+            base config:module-type;
+
+            // Specifies the prefix for generated java classes.
+            config:java-name-prefix Monitoring;
+    }
+
+    // Augments the 'configuration' choice node under modules/module
+    augment "/config:modules/config:module/config:configuration" {
+        case monitoring-impl {
+            when "/config:modules/config:module/config:type = 'monitoring-impl'";
+
+            //wires in the data-broker service
+            container data-broker {
+                uses config:service-ref {
+                    refine type {
+                        mandatory true;
+                        config:required-identity mdsal:binding-async-data-broker;
+                    }
+                }
+            }
+            container notification-service {
+                uses config:service-ref {
+                  refine type {
+                    mandatory false;
+                    config:required-identity mdsal:binding-notification-service;
+                  }
+               }
+            }
+            container rpc-registry {
+                uses config:service-ref {
+                    refine type {
+                        mandatory true;
+                        config:required-identity mdsal:binding-rpc-registry;
+                    }
+                }
+            }
+        }
+    }
+}

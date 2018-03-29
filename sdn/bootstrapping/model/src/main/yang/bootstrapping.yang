@@ -1,0 +1,120 @@
+module bootstrapping {
+    yang-version 1;
+    namespace "urn:eu:point:bootstrapping";
+    prefix bootstrapping;
+
+    description "Bootstrapping configuration";
+
+    revision "2015-07-22" {
+        description "Initial version.";
+    }
+
+    rpc configureTm {
+        input {
+            leaf tmIp {
+                type string;
+            }
+            leaf tmPort {
+                type int32;
+            }
+            leaf tmOpenflowId {
+                type string;
+            }
+            leaf tmAttachedSwitchId {
+                type string;
+            }
+            leaf tmNodeId {
+                type string;
+            }
+            leaf tmLid {
+                type int32;
+            }
+            leaf tmInternalLid {
+                type int32;
+            }
+            leaf tmSourceNodeConnector{
+                type string;
+            }
+            leaf tablesOptionOn{
+                type boolean;
+            }
+            leaf groupsOptionOn{
+                type boolean;
+            }
+            leaf deploymentToolOn{
+                type boolean;
+            }
+        }
+    }
+
+    rpc activateApplication {
+        input {
+            leaf status {
+                type boolean;
+            }
+        }
+    }
+
+
+    rpc nodeLinkInformation {
+        input {
+            leaf srcNode {
+                type string;
+            }
+            leaf dstNode {
+                type string;
+            }
+            leaf nodeConnector{
+                type string;
+            }
+        }
+        output {
+            leaf srcNodeId {
+                type string;
+            }
+            leaf linkId {
+                type string;
+            }
+        }
+    }
+
+    rpc configureSwitch {
+        input {
+            leaf switchId {
+                type string;
+            }
+            leaf portId {
+                type string;
+            }
+            leaf linkId {
+                type int32;
+            }
+        }
+    }
+
+    rpc configureNodeRegistry {
+        input {
+            leaf noneName {
+                type string;
+            }
+            leaf noneId {
+                type string;
+            }
+        }
+    }
+
+    rpc configureNodeConnectorRegistry {
+        input {
+            leaf noneConnectorName {
+                type string;
+            }
+            leaf srcNode {
+                type string;
+            }
+            leaf dstNode {
+                type string;
+            }
+        }
+    }
+
+}

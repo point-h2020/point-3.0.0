@@ -1,0 +1,4 @@
+#!/bin/sh
+#export CLASSPATH=.:$HOME/usr/lib
+export CLASSPATH=.:/usr/local/lib
+javac $@

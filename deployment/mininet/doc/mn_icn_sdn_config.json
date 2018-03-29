@@ -1,0 +1,97 @@
+{
+  "ROOT_DIR": "/home/point/blackadder/deployment/",
+  "WRITE_TOPO": "mn_icn_topo/",
+  "MANAGEMENT_NET": "192.168.133.36/24",
+  "CLICK_GLOBAL_CONF":{
+    "BLACKADDER_ID_LENGTH": 8,
+    "LIPSIN_ID_LENGTH": 32,
+    "CLICK_HOME": "/usr/local/",
+    "WRITE_CONF": "/tmp/",
+    "USER": "point",
+    "SUDO": true,
+    "OVERLAY_MODE": "mac"
+  },
+  "cluster_topology": [
+    {
+      "label": "00013336",
+      "testbed_ip": "192.168.133.36",
+      "platform": "mininet",
+      "running_mode": "user",
+      "role": [],
+      "name": "nap1",
+      "promisc": false,
+      "connections": [
+        {
+          "to": "00000203",
+          "src_if": "nap1-eth0",
+          "dst_pt": "2"
+        }
+      ]
+    },
+    {
+      "label": "00013338",
+      "testbed_ip": "192.168.133.38",
+      "platform": "mininet",
+      "running_mode": "user",
+      "role": [],
+      "name": "nap2",
+      "promisc": false,
+      "connections": [
+        {
+          "to": "00000203",
+          "src_if": "nap2-eth0",
+          "dst_pt": "4"
+        }
+      ]
+    },
+    {
+      "label": "00000203",
+      "testbed_ip": "192.168.132.203",
+      "running_mode": "user",
+      "platform": "mininet",
+      "role": [],
+      "name": "s1",
+      "operating_system": "ovs",
+      "sdn_implementation": "ports",
+      "bridge": "s1",
+      "connections": [
+        {
+          "to": "00013336",
+          "src_pt": "2",
+          "dst_if": "nap1-eth0"
+        },
+        {
+          "to": "00013338",
+          "src_pt": "4",
+          "dst_if": "nap2-eth0"
+        },
+        {
+          "to": "00000234",
+          "src_pt": "5",
+          "dst_pt": "17"
+        }
+      ]
+    },
+    {
+      "label": "00000234",
+      "testbed_ip": "192.168.132.234",
+      "running_mode": "user",
+      "role": [],
+      "name": "essex core ovs switch",
+      "operating_system": "ovs",
+      "sdn_implementation": "bridges",
+      "bridge": "",
+      "connections": [
+        {
+          "to": "00000203",
+          "src_pt": "17",
+          "dst_pt": "5"
+        }
+      ]
+    }
+  ],
+  "clusters":[
+    {"cluster_ip": "192.168.132.203"},
+    {"cluster_ip": "192.168.132.204"}
+  ]
+}

@@ -1,0 +1,38 @@
+BLACKADDER TOPOLOGY AUTOGENERATOR
+==================================
+
+    This is the README file for the source code of the blackadder topology and configuration
+file autogenerator. For more information or any enquiries please email Mohammed Al-Khalidi at
+mshawk@essex.ac.uk
+
+
+
+   The blackadder topology and configuration file autogenerator is an R language script written
+for the purpose of generating a random blackadder topology with random node connectivity degree 
+and thereafter creating a *.cfg configuration file ready to be used by the blackadder deployment 
+tool. The script is solely for the purpose of facilitating NS3-blackadder simulations of large 
+scale networks eliminating the time and complexity needed for manually generating large configu-
+ration files. Please read the notes below which will explain how to use the script:
+
+- You will need to have R language installed on your machine and make sure to install "graph" and 
+"igraph" packages within R as well.        
+
+- You can use any random graph generator function you like and any number of nodes as long as you 
+convert your graph into graphNEL form after that as illustrated in the script. The function used 
+in the script as an example is a barabasi game random graph generator with 100 nodes.
+
+- Make sure you use undirected links in your graph generation so links will be identified both 
+ways and translated into the configuration file correctly. Also make sure your function doesn't
+generate loops (connection with the node itself) or isolated nodes with no connections. This 
+will help simulate a more realistic topology and avoid any errors in creating the configuration
+file.
+
+- The role of all the nodes in the generated configuration file are forwarders and no TM or RV node
+is specified. This is to leave you with the ability to freely assign the TM, RV role as appropriate 
+for your simulation.
+
+- No publisher or subscriber app. is specified in the generated configuration file, this is also to
+let you decide your simulation requirement, network traffic load and desired output freely.
+
+- The generated configuration file named ns3_topology.cfg can be found in your default R workspace 
+after running the script.

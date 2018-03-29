@@ -1,0 +1,16 @@
+= Compilation =
+
+Simply run:
+
+$ make
+
+
+= Execution =
+
+Invoke:
+
+$ ./kernellimits <NUM_OF_THREADS>
+
+The program requires an argument which is the number of threads that should be
+created. Each thread is requesting a shared mutex to be locked and sleeps for
+1ms. This is repeated three times in each thread.

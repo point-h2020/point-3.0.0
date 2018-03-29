@@ -1,0 +1,94 @@
+{
+  "ROOT_DIR": "/home/point/blackadder/deployment/",
+  "WRITE_TOPO": "mn_icn_topo/",
+  "MANAGEMENT_NET": "192.168.133.36/24",
+  "CLICK_GLOBAL_CONF":{
+    "BLACKADDER_ID_LENGTH": 8,
+    "LIPSIN_ID_LENGTH": 32,
+    "CLICK_HOME": "/usr/local/",
+    "WRITE_CONF": "/tmp/",
+    "USER": "point",
+    "SUDO": true,
+    "OVERLAY_MODE": "mac"
+  },
+  "cluster_topology": [
+    {
+      "label": "00013336",
+      "testbed_ip": "192.168.133.36",
+      "platform": "mininet",
+      "running_mode": "user",
+      "role": [],
+      "name": "nap1",
+      "promisc": false,
+      "connections": [
+        {
+          "to": "00000192",
+          "src_if": "nap1-eth0",
+          "dst_pt": "s1-1"
+        }
+      ]
+    },
+    {
+      "label": "00013338",
+      "testbed_ip": "192.168.133.38",
+      "platform": "mininet",
+      "running_mode": "user",
+      "role": [],
+      "name": "nap2",
+      "promisc": false,
+      "connections": [
+        {
+          "to": "00000192",
+          "src_if": "nap2-eth0",
+          "dst_pt": "s1-2"
+        }
+      ]
+    },
+    {
+      "label": "00000192",
+      "testbed_ip": "192.168.132.192",
+      "running_mode": "user",
+      "platform": "mininet",
+      "role": [],
+      "name": "s1",
+      "operating_system": "ovs",
+      "sdn_implementation": "ports",
+      "bridge": "s1",
+      "connections": [
+        {
+          "to": "00013336",
+          "src_pt": "s1-1",
+          "dst_if": "nap1-eth0"
+        },
+        {
+          "to": "00013338",
+          "src_pt": "s1-2",
+          "dst_if": "nap2-eth0"
+        },
+        {
+          "to": "00000251",
+          "src_pt": "s1-3",
+          "dst_if": "eth1"
+        }
+      ]
+    },
+    {
+      "label": "00000251",
+      "testbed_ip": "192.168.132.251",
+      "running_mode": "user",
+      "role": [],
+      "name": "essex core ICN node",
+      "connections": [
+        {
+          "to": "00000192",
+          "src_if": "eth1",
+          "dst_pt": "s1-3"
+        }
+      ]
+    }
+  ],
+  "clusters":[
+    {"cluster_ip": "192.168.132.192"},
+    {"cluster_ip": "192.168.132.194"}
+  ]
+}

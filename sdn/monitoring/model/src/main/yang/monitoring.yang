@@ -1,0 +1,28 @@
+module monitoring {
+    yang-version 1;
+    namespace "urn:eu:point:monitoring";
+    prefix monitoring;
+
+	import opendaylight-inventory {prefix inv; revision-date 2013-08-19;}
+    import yang-ext {prefix ext; revision-date "2013-07-09";}
+
+    description "LSN Monitoring configuration";
+
+    revision "2015-07-22" {
+        description "Initial version.";
+    }
+
+    rpc init {
+          input {
+            leaf trafficmonitor-enabled {
+        		type boolean;
+        	}
+        	leaf trafficmonitor-period {
+        		type int32;
+        	}
+        	leaf linkmonitor-enabled {
+        		type boolean;
+        	}
+          }
+     }
+}

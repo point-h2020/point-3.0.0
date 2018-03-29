@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<features name="bootstrapping-application-features-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.2.0 http://karaf.apache.org/xmlns/features/v1.2.0">
+    <repository>mvn:org.opendaylight.controller/features-mdsal/${feature.mdsal.version}/xml/features</repository>
+    <repository>mvn:org.opendaylight.netconf/features-restconf/${feature.restconf.version}/xml/features</repository>
+    <repository>mvn:org.opendaylight.netconf/features-netconf-connector/${feature.netconf.connector.version}/xml/features</repository>
+    <repository>mvn:org.opendaylight.openflowplugin/features-openflowplugin/${feature.openflowplugin.version}/xml/features</repository>
+    <repository>mvn:org.opendaylight.yangtools/features-yangtools/${yangtools.version}/xml/features</repository>
+    <repository>mvn:org.opendaylight.mdsal.model/features-mdsal-model/${maven-sal-api-gen-plugin.version}/xml/features</repository>
+    <repository>mvn:org.opendaylight.dlux/features-dlux/${feature.dlux.version}/xml/features</repository>
+    <repository>mvn:org.opendaylight.l2switch/features-l2switch/${feature.l2switch.version}/xml/features</repository>
+
+    <feature name='tm-sdn' description='POINT :: OpenDaylight :: TM-SDN' version='${tmsdn.version}'>
+        <bundle>mvn:io.netty/netty-buffer/${netty.version}</bundle>
+        <bundle>mvn:io.netty/netty-common/${netty.version}</bundle>
+        <bundle>mvn:io.netty/netty-transport/${netty.version}</bundle>
+        <bundle>mvn:io.netty/netty-codec/${netty.version}</bundle>
+        <bundle>mvn:io.netty/netty-codec-http/${netty.version}</bundle>
+        <bundle>mvn:io.netty/netty-handler/${netty.version}</bundle>
+        <bundle>mvn:com.google.protobuf/protobuf-java/${protobuf.version}</bundle>
+        <bundle>mvn:eu.point/tmsdn/${tmsdn.version}</bundle>
+    </feature>
+
+    <feature name='registry-model' description='POINT :: OpenDaylight :: registry API' version='${registry.version}'>
+        <feature version="${maven-sal-api-gen-plugin.version}">odl-mdsal-models</feature>
+        <bundle>mvn:org.opendaylight.controller.model/model-inventory/${feature.mdsal.version}</bundle>
+        <bundle>mvn:eu.point/registry-model/${registry.version}</bundle>
+    </feature>
+
+    <feature name='registry-impl' description='POINT :: OpenDaylight :: registry' version='${registry.version}'>
+        <feature version="${feature.mdsal.version}">odl-mdsal-broker</feature>
+        <feature version="${registry.version}">registry-model</feature>
+        <bundle>mvn:eu.point/registry-impl/${registry.version}</bundle>
+        <configfile finalname="etc/opendaylight/karaf/${registry.configfile}">mvn:eu.point/registry-config/${registry.version}/xml/config</configfile>
+    </feature>
+
+
+    <feature name='bootstrapping-model' description='POINT :: OpenDaylight :: Bootstrapping API' version='${bootstrapping.version}'>
+        <feature version="${maven-sal-api-gen-plugin.version}">odl-mdsal-models</feature>
+        <bundle>mvn:eu.point/bootstrapping-model/${bootstrapping.version}</bundle>
+    </feature>
+
+    <feature name='bootstrapping-impl' description='POINT :: OpenDaylight :: Bootstrapping' version='${bootstrapping.version}'>
+        <feature version="${feature.openflowplugin.version}">odl-openflowplugin-southbound</feature>
+        <feature version="${feature.openflowplugin.version}">odl-openflowplugin-flow-services</feature>
+        <feature version="${feature.l2switch.version}">odl-l2switch-all</feature>
+        <feature version="${feature.mdsal.version}">odl-mdsal-broker</feature>
+        <feature version="${bootstrapping.version}">bootstrapping-model</feature>
+        <feature version="${registry.version}">registry-model</feature>
+        <feature version="${registry.version}">registry-impl</feature>
+        <bundle>mvn:eu.point/bootstrapping-impl/${bootstrapping.version}</bundle>
+        <bundle>mvn:org.opendaylight.controller.thirdparty/net.sf.jung2/${jung2.version}</bundle>
+        <configfile finalname="etc/opendaylight/karaf/${bootstrapping.configfile}">mvn:eu.point/bootstrapping-config/${bootstrapping.version}/xml/config</configfile>
+    </feature>
+
+    <feature name='monitoring-model' description='POINT :: OpenDaylight :: Monitoring API' version='${monitoring.version}'>
+        <feature version="${maven-sal-api-gen-plugin.version}">odl-mdsal-models</feature>
+        <bundle>mvn:eu.point/monitoring-model/${monitoring.version}</bundle>
+    </feature>
+
+    <feature name='monitoring-impl' description='POINT :: OpenDaylight :: Monitoring' version='${monitoring.version}'>
+        <feature version="${feature.openflowplugin.version}">odl-openflowplugin-southbound</feature>
+        <feature version="${feature.openflowplugin.version}">odl-openflowplugin-flow-services</feature>
+        <feature version="${feature.l2switch.version}">odl-l2switch-all</feature>
+        <feature version="${feature.mdsal.version}">odl-mdsal-broker</feature>
+        <feature version="${monitoring.version}">monitoring-model</feature>
+        <feature version="${registry.version}">registry-model</feature>
+        <feature version="${registry.version}">registry-impl</feature>
+        <bundle>mvn:eu.point/monitoring-impl/${monitoring.version}</bundle>
+        <configfile finalname="etc/opendaylight/karaf/${monitoring.configfile}">mvn:eu.point/monitoring-config/${monitoring.version}/xml/config</configfile>
+    </feature>
+
+    <feature name='point-rest' version='${project.version}' description='POINT :: OpenDaylight :: REST'>
+        <feature version="${registry.version}">registry-impl</feature>
+        <feature version="${monitoring.version}">monitoring-impl</feature>
+        <feature version="${bootstrapping.version}">bootstrapping-impl</feature>
+    	<feature version="${feature.restconf.version}">odl-restconf-all</feature>
+    </feature>
+
+    <feature name='point-ui' version='${project.version}' description='POINT :: OpenDaylight :: UI'>
+    	<feature version="${project.version}">point-rest</feature>
+        <bundle>mvn:eu.point/icnsdnui-bundle/${icnsdnui.version}</bundle>
+    	<feature version="${feature.restconf.version}">odl-mdsal-apidocs</feature>
+    	<feature version="${feature.mdsal.version}">odl-mdsal-xsql</feature>
+    	<feature version="${feature.dlux.version}">odl-dlux-all</feature>
+     </feature>
+
+    <feature name='point-all' version='${project.version}' description='POINT :: OpenDaylight :: All features'>
+        <feature version="${tmsdn.version}">tm-sdn</feature>
+        <feature version="${project.version}">point-ui</feature>
+    </feature>
+</features>

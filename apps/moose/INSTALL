@@ -1,0 +1,17 @@
+= Dependencies =
+
+~$ sudo apt install libconfig++-dev liblog4cxx10-dev libmysql++-dev libmysqlcppconn-dev
+
+= INSTALL =
+The build script reads out the number of cores the machine provides in order to
+speed up the compilation time (-j option of make utilised).
+
+~$ make
+~$ sudo make install
+
+= CLEAN UP =
+To uninstall MOOSE:
+~$ sudo make uninstall
+ 
+To remove the compiled binaries:
+~$ make clean

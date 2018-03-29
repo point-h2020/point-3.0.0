@@ -1,0 +1,6 @@
+This directory contains documents that describe ‘step-by-step’ instructions for the installation and configuration of the POINT platform and all of its components/extensions. It should also describe instructions for installing softwares related or interact with POINT, this may include:
+* HowTo-SDN
+* HowTo
+* HowTo-IoT
+* HowTo-NS3
+* HowTo-CoAP

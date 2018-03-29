@@ -1,0 +1,57 @@
+{
+  "USER": "point",
+  "ROOT_DIR": "/home/point/",
+  "WIRTE_CONFIG": {
+    "nap": "/napConfig",
+    "httpproxy": "/proxyConfig"
+  },
+  "MANAGEMENT_NET": "192.168.133.36/24",
+  "DATA_NET": "172.17.1.1/24",
+  "NUMBER_NAPS": 2,
+  "napconf": {
+    "if": "eth1",
+    "routingPrefixes":[
+      {
+        "networkAddress": "172.16.202.0",
+        "netmask": "255.255.255.0"
+      },
+      {
+        "networkAddress": "172.16.192.0",
+        "netmask": "255.255.255.0"
+      },
+      {
+        "networkAddress": "172.16.194.0",
+        "netmask": "255.255.255.0"
+      },
+      {
+        "networkAddress": "172.16.126.0",
+        "netmask": "255.255.255.0"
+      },
+      {
+        "networkAddress": "172.16.248.0",
+        "netmask": "255.255.255.0"
+      },
+      {
+        "networkAddress": "172.16.118.0",
+        "netmask": "255.255.255.0"
+      },
+      {
+        "networkAddress": "172.16.114.0",
+        "netmask": "255.255.255.0"
+      },
+      {
+        "networkAddress": "172.16.115.0",
+        "netmask": "255.255.255.0"
+      },
+      {
+        "networkAddress": "172.17.1.0",
+        "netmask": "255.255.255.0"
+      }
+    ]
+  },
+  "clusters":[
+    {"cluster_ip": "192.168.132.203"},
+    {"cluster_ip": "192.168.132.204"}
+  ]
+
+}

@@ -1,0 +1,11 @@
+# Eclipse
+.classpath
+.project
+.cproject
+.settings/
+
+# Mac
+.DS_Store
+
+# Package Files #
+*.o

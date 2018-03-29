@@ -1,0 +1,15 @@
+= INSTALLATION =
+
+In order to build the shared library and install it on your system follow those
+commands: 
+
+~$ make
+~$ sudo make install
+
+
+= UNINSTALL =
+The following command removes all object files from /usr/lib/ and
+the corresponding header filers from /usr/local/lib/moly. The local
+lib/moly directory is also cleaned (make clean):
+
+~$ sudo make uninstall

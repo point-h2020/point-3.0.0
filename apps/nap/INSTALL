@@ -1,0 +1,32 @@
+In order to make this software invoke
+
+$ make
+$ sudo make install
+
+The complication optimisation level can be configured via the argument OPT, e.g.:
+
+$ make OPT=O3
+
+The following system libraries are required:
+
+- libboost-program-options-dev (--help argument has been implemented using this
+library)
+- libboost-thread-dev (creating threads and thread groups)
+- liblog4cxx10-dev (Class-based logging)
+- libnet1-dev (send IP packets to IP end-points)
+- libpcap-dev (capture packets on local interface)
+
+Additionally, several libraries are required which are included in Blackadder
+and must be made prior to the compilation of the NAP:
+- Blackadder
+- MOLY
+
+They can be found in blackadder/lib and blackadder/lib/moly.
+
+WHen installing the nap binary make copies all required configuration files to
+/etc/nap. To uninstall the NAP simply invoke
+
+$ sudo make uninstall
+
+which removes all files from /etc/nap and deletes the corresponding folder. The
+log file located in /var/log/nap.log will be also removed from the file system.
