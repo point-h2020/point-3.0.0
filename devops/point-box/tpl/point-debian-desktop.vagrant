@@ -1,0 +1,30 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.define "pointvm8-desktop"
+  config.vm.box = "pointvm8-desktop"
+
+  config.ssh.username = "point"
+  config.ssh.password = "pointh2020"
+  config.ssh.forward_agent = true
+  config.ssh.keys_only = false
+  config.ssh.forward_x11 = true
+  config.ssh.insert_key = false
+  config.ssh.private_key_path = "point_insecure_key"
+
+  config.vm.provider :virtualbox do |v, override|
+    v.gui = true
+    v.customize ["modifyvm", :id, "--memory", 2048]
+    v.customize ["modifyvm", :id, "--cpus", 2]
+    v.customize ["modifyvm", :id, "--vram", "64"]
+    v.customize ["setextradata", "global", "GUI/MaxGuestResolution", "any"]
+    v.customize ["setextradata", :id, "CustomVideoMode1", "1024x768x32"]
+    v.customize ["modifyvm", :id, "--ioapic", "on"]
+    v.customize ["modifyvm", :id, "--rtcuseutc", "on"]
+    v.customize ["modifyvm", :id, "--accelerate3d", "on"]
+    v.customize ["modifyvm", :id, "--clipboard", "bidirectional"]
+  end
+
+end
+

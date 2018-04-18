@@ -1,0 +1,11 @@
+{
+  "_comment": "Built with `packer build -var-file=debian8.json debian.json`",
+  "vm_name": "pointvm8",
+  "desktop": "false",
+  "iso_checksum": "2bff15521a3e90400603732bf095c80f2b3b1cf8",
+  "iso_checksum_type": "sha1",
+  "iso_name": "debian-8.10.0-amd64-netinst.iso",
+  "iso_url": "https://cdimage.debian.org/mirror/cdimage/archive/8.10.0/amd64/iso-cd/debian-8.10.0-amd64-netinst.iso",
+  "vagrantfile_template": "tpl/point-debian.vagrant"
+}
+

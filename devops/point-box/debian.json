@@ -1,0 +1,138 @@
+{
+  "description": "POINT platform",
+  "builders": [
+    {
+      "boot_command": [
+        "<esc><wait>",
+        "install",
+        " auto",
+        " url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/{{ user `preseed` }}",
+        " debian-installer=en_GB",
+        " locale=en_GB",
+        " keymap=gb",
+        " netcfg/get_hostname={{ user `hostname` }}",
+        " netcfg/get_domain={{ user `domain` }} ",
+        "<enter>"
+      ],
+      "disk_size": "{{ user `disk_size` }}",
+      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+      "guest_os_type": "{{ user `virtualbox_guest_os_type` }}",
+      "headless": "{{ user `headless` }}",
+      "http_directory": "http",
+      "iso_checksum": "{{ user `iso_checksum` }}",
+      "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+      "iso_urls": [
+        "{{ user `iso_path` }}/{{ user `iso_name` }}",
+        "{{ user `iso_url` }}"
+      ],
+      "output_directory": "box/virtualbox/ova",
+      "post_shutdown_delay": "1m",
+      "shutdown_command": "echo '{{ user `ssh_password` }}' | sudo -S shutdown -h now",
+      "ssh_password": "{{ user `ssh_password` }}",
+      "ssh_username": "{{ user `ssh_username` }}",
+      "ssh_wait_timeout": "10000s",
+      "type": "virtualbox-iso",
+      "vboxmanage": [
+        [
+          "modifyvm", "{{.Name}}", "--nictype1", "virtio"
+        ],
+        [
+          "modifyvm", "{{.Name}}", "--memory", "{{ user `memory` }}"
+        ],
+        [
+          "modifyvm", "{{.Name}}", "--cpus", "{{ user `cpus` }}"
+        ]
+      ],
+      "virtualbox_version_file": ".vbox_version",
+      "vm_name": "{{ user `vm_name` }}",
+      "export_opts":
+      [
+        "--ovf20",
+        "--manifest",
+        "--vsys", "0",
+        "--product", "POINT node",
+        "--producturl", "https://www.point-h2020.eu/",
+        "--vendor", "PrimeTel PLC",
+        "--vendorurl", "http://primetel.com.cy/research/en/",
+        "--description", "{{ user `description` }}",
+        "--version", "{{ user `version` }}"
+      ],
+      "format": "ova",
+      "skip_export": false,
+      "communicator": "ssh"
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "keep_input_artifact": true,
+      "output": "box/{{.Provider}}/{{ user `vm_name` }}-{{ user `version` }}.box",
+      "vagrantfile_template": "{{ user `vagrantfile_template` }}"
+    }
+  ],
+  "provisioners": [
+    {
+      "environment_vars": [
+        "DESKTOP={{user `desktop`}}",
+        "REMOVE_DOCS={{user `remove_docs`}}",
+        "UPDATE={{user `update`}}",
+        "INSTALL_VAGRANT_KEY={{user `install_vagrant_key`}}",
+        "SSH_USERNAME={{user `ssh_username`}}",
+        "SSH_PASSWORD={{user `ssh_password`}}",
+        "http_proxy={{user `http_proxy`}}",
+        "https_proxy={{user `https_proxy`}}",
+        "ftp_proxy={{user `ftp_proxy`}}",
+        "rsync_proxy={{user `rsync_proxy`}}",
+        "no_proxy={{user `no_proxy`}}"
+      ],
+      "execute_command": "echo '{{ user `ssh_password` }}' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+      "scripts": [
+        "script/remove-cdrom-sources.sh",
+        "script/systemd.sh",
+        "script/update.sh",
+        "script/desktop.sh",
+        "script/vagrant.sh",
+        "script/virtualbox.sh",
+        "script/motd.sh",
+        "script/minimize.sh",
+        "script/point.sh",
+        "script/cleanup.sh"
+      ],
+      "type": "shell",
+      "pause_before": "10s",
+      "expect_disconnect": "true"
+    }
+  ],
+  "variables": {
+    "cpus": "2",
+    "desktop": "false",
+    "disk_size": "40960",
+    "domain": "point",
+    "ftp_proxy": "{{env `ftp_proxy`}}",
+    "headless": "",
+    "http_proxy": "{{env `http_proxy`}}",
+    "https_proxy": "{{env `https_proxy`}}",
+    "hostname": "pointvm8",
+    "install_vagrant_key": "true",
+    "iso_checksum": "2bff15521a3e90400603732bf095c80f2b3b1cf8",
+    "iso_checksum_type": "sha1",
+    "iso_name": "debian-8.10.0-amd64-netinst.iso",
+    "iso_path": ".",
+    "iso_url": "https://cdimage.debian.org/mirror/cdimage/archive/8.10.0/amd64/iso-cd/debian-8.10.0-amd64-netinst.iso",
+    "memory": "2048",
+    "no_proxy": "{{env `no_proxy`}}",
+    "preseed": "preseed.cfg",
+    "rsync_proxy": "{{env `rsync_proxy`}}",
+    "remove_docs": "true",
+    "ssh_password": "pointh2020",
+    "ssh_username": "point",
+    "update": "true",
+    "vagrantfile_template": "tpl/point-debian.vagrant",
+    "version": "3.0.0",
+    "virtualbox_guest_os_type": "Debian_64",
+    "vm_name": "pointvm8",
+    "description": "POINT platform on Debian Jessie",
+    "eulafile": "LICENSE.blackadder"
+  }
+}
+

@@ -1,0 +1,13 @@
+#!/usr/bin/expect -f
+
+# Distribute SSH keys to every node in the testbed
+
+# Copyright (c) 2016--2018 [Alexander Phinikarides](alexandrosp@prime-tel.com)
+
+cd /home/point/lib
+spawn ./ssh-copy-id.sh
+expect {
+  "continue" { send "yes\n"; exp_continue }
+  "assword:" { send "pointh2020\n"; exp_continue }
+}
+

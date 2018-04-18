@@ -1,0 +1,224 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Set up and provision a 4-node IP-over-ICN testbed using the POINT H2020 platform
+# Hypervisor: VirtualBox
+# Base OS: Debian Jessie x64
+# Kernel: 3.16
+
+# Copyright (c) 2016--2018 [Alexander Phinikarides](alexandrosp@prime-tel.com)
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Set a default locale
+ENV["LC_ALL"] = "en_GB.UTF-8"
+
+# Define the testbed nodes
+nodes = [
+  {
+    :name => "ue01",
+    :box => "pointvm8-desktop-3.0.0",
+    :eth1 => "172.19.2.2",
+    :eth2 => "10.10.20.101",
+    :mem => "2048",
+    :cpu => "2",
+    :nodetype => "ue"
+  },
+  {
+    :name => "cnap01",
+    :box => "pointvm8-3.0.0",
+    :eth1 => "", # L2 only
+    :eth2 => "172.19.2.1",
+    :eth3 => "10.10.20.102",
+    :mem => "2048",
+    :cpu => "2",
+    :nodetype => "nap"
+  },
+  {
+    :name => "snap",
+    :box => "pointvm8-3.0.0",
+    :eth1 => "", # L2 only
+    :eth2 => "172.19.1.254",
+    :eth3 => "10.10.20.103",
+    :mem => "2048",
+    :cpu => "2",
+    :nodetype => "nap"
+  },
+  {
+    :name => "srv01",
+    :box => "pointvm8-3.0.0",
+    :eth1 => "172.19.1.2",
+    :eth2 => "10.10.20.104",
+    :mem => "2048",
+    :cpu => "2",
+    :nodetype => "srv"
+  }
+]
+
+# Begin provisioning
+Vagrant.configure("2") do |config|
+
+  # Iterate over the nodes list
+  nodes.each do |opts|
+
+    # Provision each node
+    config.vm.define opts[:name] do |node|
+
+      node.vm.box = opts[:box]
+      node.vm.host_name = opts[:name]
+
+      # Hypervisor
+      node.vm.provider "virtualbox" do |vb|
+        vb.gui = false
+        vb.linked_clone = true
+        vb.customize ["modifyvm", :id, "--memory", opts[:mem]]
+        vb.customize ["modifyvm", :id, "--cpus", opts[:cpu]]
+        # Set the default NAT router
+        # vb.customize ['modifyvm', :id, '--nat-network1', 'nap_testbed_nat']
+        # vb.customize ['modifyvm', :id, '--natnet1', '10.0.19.0/24']
+        # Enable promiscuous mode on eth1 and eth2
+        vb.customize ['modifyvm', :id, '--nicpromisc2', 'allow-all']
+        vb.customize ['modifyvm', :id, '--nicpromisc3', 'allow-all']
+      end
+
+      # Configure the ssh connection
+      # node.ssh.insert_key = true
+
+      # Networking
+      case opts[:name]
+        # IP endpoints
+        when "ue01"
+          # ue <-> cNAP
+          node.vm.network "private_network",
+            ip: opts[:eth1],
+            netmask: "255.255.255.0",
+            # TODO: set default gateway
+            # gateway: "172.19.2.1",
+            auto_config: true,
+            virtualbox__intnet: "point_ue_net",
+            nic_type: "virtio"
+          # MGMT
+          node.vm.network "private_network",
+            ip: opts[:eth2],
+            netmask: "255.255.255.0",
+            auto_config: true,
+            virtualbox__intnet: "point_mgmt",
+            nic_type: "virtio"
+          # add route to srv
+          node.vm.provision "shell", run: "always",
+            inline: "ip route add 172.19.1.0/24 via 172.19.2.1 dev eth1"
+          # add multicast route
+          node.vm.provision "shell", run: "always",
+            inline: "ip route add 224.0.0.0/4 dev eth1"
+        # IP servers
+        when "srv01"
+          # srv <-> sNAP
+          node.vm.network "private_network",
+            ip: opts[:eth1],
+            netmask: "255.255.255.0",
+            auto_config: true,
+            virtualbox__intnet: "point_srv_net",
+            nic_type: "virtio"
+          # MGMT
+          node.vm.network "private_network",
+            ip: opts[:eth2],
+            netmask: "255.255.255.0",
+            auto_config: true,
+            virtualbox__intnet: "point_mgmt",
+            nic_type: "virtio"
+          # add route to ue
+          node.vm.provision "shell", run: "always",
+            inline: "ip route add 172.19.2.0/24 via 172.19.1.254 dev eth1"
+          # view the hosted site at http://localhost:8081
+          node.vm.network "forwarded_port", guest: 80, host: 8081
+        # ICN NAPs
+        when "snap"
+          # sNAP <-> srv
+          node.vm.network "private_network",
+            auto_config: false,
+            virtualbox__intnet: "point_nap_net",
+            nic_type: "virtio"
+          # sNAP <-> cNAP
+          node.vm.network "private_network",
+            ip: opts[:eth2],
+            netmask: "255.255.255.0",
+            auto_config: true,
+            virtualbox__intnet: "point_srv_net",
+            nic_type: "virtio"
+          # MGMT
+          node.vm.network "private_network",
+            ip: opts[:eth3],
+            netmask: "255.255.255.0",
+            auto_config: true,
+            virtualbox__intnet: "point_mgmt",
+            nic_type: "virtio"
+          # eth1 is L2 only
+          node.vm.provision "shell", run: "always",
+            inline: "ip link set eth1 up"
+          # add multicast route
+          node.vm.provision "shell", run: "always",
+            inline: "ip route add 224.0.0.0/4 dev eth2"
+        when "cnap01"
+          # cNAP <-> ue
+          node.vm.network "private_network",
+            auto_config: false,
+            virtualbox__intnet: "point_nap_net",
+            nic_type: "virtio"
+          # cNAP <-> sNAP
+          node.vm.network "private_network",
+            ip: opts[:eth2],
+            netmask: "255.255.255.0",
+            auto_config: true,
+            virtualbox__intnet: "point_ue_net",
+            nic_type: "virtio"
+          # MGMT
+          node.vm.network "private_network",
+            ip: opts[:eth3],
+            netmask: "255.255.255.0",
+            auto_config: true,
+            virtualbox__intnet: "point_mgmt",
+            nic_type: "virtio"
+          # eth1 is L2 only
+          node.vm.provision "shell", run: "always",
+            inline: "ip link set eth1 up"
+          # add multicast route
+          node.vm.provision "shell", run: "always",
+            inline: "ip route add 224.0.0.0/4 dev eth2"
+      end
+
+      # Folder sync
+      node.vm.synced_folder ".", "/vagrant"
+
+      # Run bootstrap scripts
+      if opts[:nodetype] == "ue"
+        node.vm.provision "shell", path: "lib/bootstrap_ue_nodes.sh"
+      elsif opts[:nodetype] == "srv"
+        node.vm.provision "shell", path: "lib/bootstrap_srv_nodes.sh"
+      elsif opts[:nodetype] == "nap"
+        # ALWAYS RUN: Copy config scripts to NAPs
+        node.vm.provision "shell", run: "always", inline: <<-SHELL
+          sudo -u point cp -r /vagrant/lib /home/point/
+        SHELL
+        node.vm.provision "shell", path: "lib/bootstrap_nap_nodes.sh"
+      end
+
+      # Purge unneeded files and zero-out free space
+      # node.vm.provision "shell", path: "lib/zero_free_space.sh"
+
+    end
+
+  end
+
+end
+
