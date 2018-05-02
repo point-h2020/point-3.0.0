@@ -144,8 +144,8 @@ string HeaderParser::readFqdn(char *packet, uint16_t &packetSize)
 
 			if (character.compare(colon) == 0)
 			{
-				LOG4CXX_DEBUG(logger, "FQDN was given including the destination"
-						" port ... truncated this information from FQDN")
+				LOG4CXX_DEBUG(logger, "FQDN was given including the server port"
+						" ... truncated this information from FQDN")
 				it = fqdnLength;
 			}
 			else
@@ -155,7 +155,7 @@ string HeaderParser::readFqdn(char *packet, uint16_t &packetSize)
 			}
 		}
 
-		LOG4CXX_TRACE(logger, "FQDN '" << fqdn.str() << "' found in HTTP"
+		LOG4CXX_DEBUG(logger, "FQDN '" << fqdn.str() << "' found in HTTP"
 				"request");
 	}
 	else
@@ -163,6 +163,8 @@ string HeaderParser::readFqdn(char *packet, uint16_t &packetSize)
 		LOG4CXX_TRACE(logger, "FQDN could not be found in HTTP request");
 	}
 
+	LOG4CXX_ASSERT(logger, fqdn.str().length() == 0, "FQDN not present in HTTP "
+			"request");
 	return fqdn.str();
 }
 

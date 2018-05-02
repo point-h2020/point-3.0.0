@@ -43,6 +43,9 @@ void Collector::operator ()()
 	float averageLatency = 0; // values are all with a base of 0.1
 	int averageLatencySum;
 	int averageLatencyCounter;
+	uint32_t channelAcquisitionTime = 0;
+	uint32_t mcastIpBytesIn = 0;
+	uint32_t mcastIpBytesOut = 0;
 	LOG4CXX_INFO(logger, "Statistics collector thread started");
 
 	if (!moly.Process::startReporting())
@@ -91,6 +94,26 @@ void Collector::operator ()()
 		{
 			LOG4CXX_WARN(logger, "Average CMC group could not be reported")
 		}
+
+                // MCast/IGMP handler stats..
+		channelAcquisitionTime = _statistics.averageChannelAcquisitionTime();
+		LOG4CXX_TRACE(logger, "*** *** *** Average (x10000) Channel Acquisition Time in seconds at a"
+                        << " cNAP over the configured reporting interval: " << channelAcquisitionTime);
+		moly.channelAquisitionTime(channelAcquisitionTime);//TODO TBD by sebastian 
+
+                // MCast/IGMP handler stats..
+		mcastIpBytesIn = _statistics.counterRxIGMPBytes();
+		LOG4CXX_TRACE(logger, "*** *** *** Counted incoming multicast packets at a"
+                        << " sNAP over the configured reporting interval: " << mcastIpBytesIn );
+		moly.rxBytesIpMulticast(_configuration.nodeId().uint(), 0, mcastIpBytesIn);//TODO TBD by sebastian 
+                
+                 // MCast/IGMP handler stats..
+		mcastIpBytesOut = _statistics.counterTxIGMPBytes();
+		LOG4CXX_TRACE(logger, "*** *** *** Counted incoming multicast packets at a"
+                        << " cNAP over the configured reporting interval" << mcastIpBytesOut);
+		moly.txBytesIpMulticast(_configuration.nodeId().uint(), 0, mcastIpBytesOut);//TODO TBD by sebastian 
+                
+                
 
 		// Number of HTTP requests per FQDN
 		httpRequestsPerFqdn = _statistics.httpRequestsPerFqdn();

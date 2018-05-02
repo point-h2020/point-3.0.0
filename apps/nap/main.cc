@@ -134,9 +134,7 @@ int main(int ac, char* av[])
 
 	if (vm.count("version"))
 	{
-		cout << "This NAP runs version 3.3.1. More information about the "
-				"released can be found in RELEASE which is located in the root "
-				"directory of the NAP source folder\n";
+		cout << "This NAP runs version 3.3.1\n";
 		return EXIT_SUCCESS;
 	}
 

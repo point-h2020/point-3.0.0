@@ -121,8 +121,16 @@ All handlers have a buffer in case a packet cannot be published under its \ac{CI
 	\item[\texttt{port}]: Integer, optional
 \end{itemize}
 
+\subsection{\texttt{delayHttpResponseDelivery} and \texttt{delayHttpResponseTime}}
+To help the sNAP to form larger multicast group sizes this option allows the delayed delivery of HTTP responses to the HTTP handler once received by the HTTP proxy from an IP service endpoint. Note, the delivery of succeeding HTTP responses is not affected by this option. If the delayed HTTP response delivery variable is set a default value of 10\,ms is assumed unless explicitly configured with \texttt{delayHttpResponseTime}.
+
+\subsection{\texttt{delayMpdDelivery} and \texttt{delayMpdTime}}
+In case the initial delivery of the HTTP response comprising an MPD file for MPEG DASH scenarios the sNAP allows to delay the delivery of HTTP requests which have 'mpd' at the end of the web resource. The \texttt{delayMpdTime} variable allows to configure the time the sNAP delays the delivery of the HTTP request to the web server. The value is in milli seconds. 
+
 \subsection{\texttt{interface}}\label{sec:Introduction_Var_interface}
 This variable tells the \ac{NAP} on which local network device it communicates with IP endpoints. The argument to this variable must be given as a string and the interface name provided must have the IP assigned all the NAP's IP endpoints send their IP traffic to. Reason being how the NAP utilises PCAP, i.e. reading the host IP address to compile a PCAP filter which ignores packets sent directly to the NAP.
+
+Note, virtual interfaces and bridges have not been extensively tested and - so far - it can be stated that if the NAP is bound to a bridge this cause weird behaviour in the IP handler.
 
 \subsection{\texttt{icnGwNetworkAddress} and \texttt{icnGwNetmask}}\label{sec:Introduction_Var_icnGw}
 TODO More information about how to set up the \ac{NAP} as an ICN \ac{GW} is explained in Section~\ref{sec:Introduciton_ICNGW}.
@@ -217,6 +225,45 @@ Note, for the time being the \ac{cNAP} does not perform flow control operations 
 \text{LTP}_{credit} * \text{MITU} \le \text{BufSize}\label{eq:TCP_SERVER_SOCKET_BUFFER_SIZE}
 \end{eqnarray}
 
+\subsection{\texttt{igmp\_*}}\label{sec:Introduction_Var_igmp}
+The following variables configure specifically the IGMP handler of the \ac{NAP}. Most of the variables control the operation of the handler following the instructions of RFC~2236~\cite{rfc2236}.
+
+\subsubsection{igmp\_disableHandler}
+If set to "false", this variable disables the IGMP handler of the \ac{NAP} and IGMP traffic is not specifically managed inside the ICN network. 
+
+\subsubsection{igmp\_genQueryIP}
+The variable defines the destination IP address of general queries. According to the RFC~2236 the designated IP is ``224.0.0.1''.
+
+\subsubsection{igmp\_groupLeaveIP}
+The variable defines the destination IP address of leave group queries. According to the RFC~2236 the designated IP is ``224.0.0.2''.
+
+\subsubsection{igmp\_genQueryTimer}
+The variable defines the time period (in ms) between general queries sent by the Querier. According to the RFC~2236 the default value of this variable is $125,000$~ms.
+
+\subsubsection{igmp\_genLeaveTimer}
+The variable defines the time period (in ms) that the IGMP handler waits for a response, after emitting a group specific query due to previous client leave. According to the RFC 2236, the proposed value is $1000$~ms. This value may be tuned to modify the ``leave latency'' of the network. A lower value results in reduced time to detect the loss of the last member of a group.
+
+\subsubsection{igmp\_redundantIGMP}
+The variable defines the number of retransmissions of IGMP requests, to guard against losses, since they are not acknowledged. In RFC 2236 this is known as the \textit{robustness variable}.  If a subnet is expected to be lossy, the robustness variable may be increased. The variable MUST NOT be zero, and SHOULD NOT be one. By default it is set to "2".
+
+\subsubsection{igmp\_dropAfterQueriesNum}
+The variable defines the number of group specific Queries sent before the router assumes there are no local members. According to RFC~2236 the default value of this variable is equal with the \textit{igmp\_redundantIGMP} variable.
+
+\subsubsection{igmp\_sNapMCastIPs}
+The variable defines the IP addresses and ports of the supported multicast groups. It is required only by an IGMP handler with the \textit{serverNAP} role (see Sect.~\ref{intro_vars_igmp_role}). If multiple groups are supported then a white space is used to separate them, fi.~``225.0.0.21:5004 225.0.0.22:5004 225.0.0.23:5004''.
+
+\subsubsection{igmp\_ignoreIGMPFrom} 
+The variable defines the IP addresses of a set of IGMP control plane sources that will be ignored (not processed) by the IGMP handler, even if the handler is enabled. The local IP address of the IGMP handler must be included so as to prevent packets from being looped (reprocessing outgoing packets). If packets from multiple IP addresses are to be ignored then a white space is used to separate those addresses, fi. ``172.16.4.1 224.0.0.251 224.0.0.252''.
+
+\subsubsection{igmp\_ignoreMCastDataFrom}
+The variable defines the IP addresses of a set of IGMP data plane sources that will be ignored (not processed) by the IGMP handler, even if the handler is enabled. In case of \textit{clientNAP} (see Sect.~\ref{intro_vars_igmp_role}), the local IP address of the IGMP handler must be included so as to prevent packets from being looped (reprocessing outgoing packets). If packets from multiple IP addresses are to be ignored then a white space is used to separate those addresses, fi. ``172.16.4.1 224.0.0.251 224.0.0.252''.
+\subsubsection{igmp\_napOperationMode}\label{intro_vars_igmp_role}
+The operation of the IGMP handler depends on the location of the \ac{NAP}, offering different services to the IP-based IGMP servers and IGMP clients. It is highly suggested to indicate the role of the \ac{NAP} by selecting one of the two values: \emph{``clientNAP'', ``serverNAP''}. In case no role is selected (the variable is left empty) then both roles are enabled.
+
+\subsubsection{igmp\_message\_processing\_lag}
+When the last member
+of a group leaves the group, the IGMP handler at the clients' side must notify the IGMP handler at the server's side, which is done by sending two messages: the group leave message for the handler itself, and the related ICN message to remove ICN state. The processing overhead of the first message or network reordering can invert the sequence of the requests, thus breaking the communication scheme.This parameter introduces a safety lag (in ns) between the two messages, thus increasing the probability of in-order delivery at the receiver's end, and should not be left empty. A sample value is 500000ns.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Section
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -241,17 +288,10 @@ The logging output can be configured to stdout and the filesystem using the \tex
 % Section
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{IP}\label{sec:IcnNamespaces_IP}
-The IP namespace and its implementation in the IP handler is the fallback for all traffic which is not handled by any other namespace.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Section
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{HTTP}\label{sec:IcnNamespaces_HTTP}
-The HTTP namespace and its implementation in the HTTP handler applies to all traffic classified as HTTP, i.e. TCP towards Port 80 (unless specified otherwise in nap.cfg).
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Section
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{IGMP}\label{sec:IcnNamespaces_IGMP}
-The IGMP namespace and its implementation in the IGMP handler applies to all traffic classified as IGMP.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Section
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -341,13 +381,39 @@ In order to accommodate for the possibility that a remote \ac{NAP} disappears du
 % CHAPTER
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Interfaces}
+todo
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Section
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{ICN Core (Blackadder)}
+todo
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Section
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{NAP-SA}
+todo
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CHAPTER
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Code Structure and Implementation Design Choices}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Section
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Simplified UML View of NAP Classes}
+todo
 \section{Demultiplexer}\label{sec:Code_Demux}
 The implementation of demultiplexing incoming packets slightly differs from the \ac{NAP}'s architectural description. While the \ac{POINT} Deliverable 3.1 \cite{POINT-D3.1} illustrates a single functional box which receives packets from the IP endoint and determines which handler they belong to the implementation of the NAP uses two orthorgonal methods; one for HTTP-over-ICN traffic and one for the remaining packets. For HTTP-over-ICN packets an iptables rule is inserted to forward all traffic to a particular TCP port to another port where the NAP's HTTP proxy is listening on.
 
 By default the TCP interception port for HTTP-over-ICN is set to TCP communications towards Port 80 which is forwarded to Port 3127, the very same port used by Squid for transparent proxy interceptions. If the HTTP service is using a server port other than 80 this can be configured in the NAP's configuration file (see Section~\ref{sec:Introduction_Var_tcpInterceptionPort} for more details). The NAP has its own transparent HTTP proxy which (transparently) listens on Port 3127 and terminates TCP session that arrive on this port with the help of the modified iptables. The modified iptables rules can be checked by invoking the following command after the \ac{cNAP} has been started:
 
 \texttt{\$ iptables -L -t nat}
+
+\subsection{PCAP Filters}\label{sec:Code_Demux_Pcap}
+TBA
 
 \subsection{\acl{MITU}}\label{sec:Code_Demux_Mitu}
 The POINT platform places the ICN packet (ICN header + payload) straight in Layer 2 frames. Thus, what \ac{MTU} is for IP packets, the \ac{MITU} is for ICN packets. For IP-over-ICN scenarios where the entire IP packet (header + payload) is placed as payload to an ICN packet an ICN link which does not support jumbo frames will force the NAP to fragment packets with an \ac{MTU} + IP header larger than the \ac{MITU}. Hence, the NAP checks for every packet that is provisioned by PCAP if the length is larger than the \ac{MITU} which is configured in the NAP's configuration file\footnote{See Section~\ref{sec:Introduction_Var_mitu}}. In case the packet is handled in the IP-over-ICN handler the NAP follows RFC 792 \cite{rfc792} which states that if the Don't Fragment flag is set in the IP header the packet must not be fragmented and an \ac{ICMP} packet of Type 3, Code 4 must be issued to inform the sending IP endpoint to lower its \ac{MTU}.
@@ -490,7 +556,7 @@ For services other than HTTP (or any other future non-IP service) the IP handler
 Any ready-to-be-published packet, either directly from the IP handler or through the buffer, is passed on to the \ac{UTP} implementation which simply publishes the packet following the methods and procedures described in Section~\ref{sec:Transport_UTP} on Page~\pageref{sec:Transport_UTP}.
 
 \paragraph{HTTP}
-Similar to IP, the HTTP namespace has several buffers which are frequently cleaned up in case the packets were not sent/published.
+TODO
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Section
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -518,6 +584,10 @@ Whenever the NAP maps an incoming packet to the HTTP-over-ICN name-space, the fo
 	\item The \ac{sNAP} closes the \ac{LTP} session by sending an \ac{LTP}-CTRL-\ac{SE} message which must be confirmed by all \acp{cNAP}
 	\item The \ac{sNAP} closes the \ac{CMC} group
 \end{enumerate}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Section
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Static Surrogate Support on Localhost}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Section
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -563,7 +633,51 @@ The dropping filter can be configured via the \ac{NAP} configuration file using 
 \newline
 \newline
 This variable accepts unsigned integer values between 0 and 2$^{32}$ and represents the rate data packets will be dropped on average. For instance, if 100 is given to \texttt{tcDroppingRate} the NAP drops one in 100 to be published packets. Note, as \ac{LTP} has been designed and implemented for well managed networks it is not advisable to set the rate lower than 100. Experiments have shown that in this case the \ac{LTP} state machine of both publishing and subscribing endpoints gets out of sync.
-\section{Monitoring via \acl{MOLY}}\label{sec:Code_MOLY}
+
+\section{IGMP handler}\label{sec:Code_IGMP}
+
+The IGMP handler of the \ac{NAP} bridges transparently two (or more) IP multicast networks that cross the (native multicast) ICN network. It assumes that one content source, who is attached at a individual NAP (sNAP), and multiple content consumers, who are attached at other NAPs (cNAPs), use the IGMP v2 protocol in order to stream video from the sender to multiple consumers. Therefore, the primary role of the IGMP handler is to translate the IGMP v2 messages of the IP networks into ICN messages of the POINT network, thus exploiting the inherent multicast support. The operation of the IGMP handler is similar to \textit{IGMP snooping}, in terms of listening to the IGMP traffic, but differs significantly since it introduces different operations inside the ICN network and converts IP multicast traffic into ICN and vice versa.
+
+In the following, we demonstrate the basic operation of the IGMP handler in the sNAP and cNAP, starting with the bootstrapping procedure which is depicted in Fig.~\ref{fig:igmp_fig1}. The operation is relatively simple, including the publication of the required scopes for the IGMP traffic (control and data plane) by both NAP types and the subscription of the sNAP to the information item of the multicast group that the local server streams. Note that the sNAP must be configured with the multicast groups that it is serving (to be exact, the multicast groups server by IP servers attached to it), in order to know which items it must subscribe to.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=1\linewidth]{eps/igmp_fig1}
+	\caption{Bootstrapping of the IGMP handler at the cNAP and the sNAP. CID and DID indicate the information scopes identifiers of the IGMP control plane and data plane,respectively. CIDc is the information item identifier of a specific multicast group.}
+	\label{fig:igmp_fig1}
+\end{figure}
+
+When an IGMP membership report is received at the cNAP, the identifier of the corresponding multicast group will be advertised (Fig.~\ref{fig:igmp_fig2}). The request will be matched with the existing sNAP's subscription and the TM will deliver the forwarding identifier for routing content from the cNAP to the sNAP. Finally, the cNAP will send the membership report of the IP client to the sNAP using implicit rendezvous (publish\_data\_isub), which indicates that the corresponding data stream must be forwarder to the cNAP.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=1\linewidth]{eps/igmp_fig2}
+	\caption{The operation of a cNAP upon the receipt of a membership report for the multicast group with identifier CIDc.}
+	\label{fig:igmp_fig2}
+\end{figure}
+
+Then, the sNAP will start pushing the incoming data stream to the cNAP as shown in Fig.~\ref{fig:igmp_fig3}. The operation is again quite simple, as the sNAP pushes the data packet to the publisher-cNAP when the forwarding plane is enabled, or buffers the packet and publishes the related data plane identifier otherwise.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=1\linewidth]{eps/igmp_fig3}
+	\caption{The operation of serverNAP (sNAP) upon the receipt of a data packet for the multicast group with identifier CIDc.}
+	\label{fig:igmp_fig3}
+\end{figure}
+
+The handler properly interfaces with upstream and downstream IGMP nodes. Specifically, the sNAP responds to IGMP queries from upstream with the groups active in the POINT network, and the cNAP generates periodic IGMP queries to downstream nodes, handling their membership reports, no reports (implicit leaves) or explicit leave messages.
+
+\subsection{IGMP handler limitations}
+
+The IGMP handler has the following limitations:
+\begin{itemize}
+\item It currently runs on a specific operation mode (server or client NAP). The adoption of both roles is not prohibited but is not sufficiently tested, hence is unlikely to be stable.
+\item Only IGMP v2 is supported.
+\item Currently, the IGMP handler does not push data into the network via the network protocol of NAP,  operating directly via the publish-subscribe API offered by the ICN core (Blackadder).
+\item Although the instructions of RFC~2236 are generally followed, the implementation of the IGMP timers is different. The current implementation waits for a response to the periodic general queries until the next query is sent, hence an empty group is not removed until three general query periods expire. When IGMPv2 clients sent explicit leave messages this makes no difference, but when the last member of the group loses connectivity unexpectedly, the delay until the groups stops being forwarded is different than that in the RFC. 
+\end{itemize}
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Bibliography

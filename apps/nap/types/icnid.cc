@@ -4,6 +4,9 @@
  *  Created on: 15 Feb 2016
  *      Author: Sebastian Robitzsch <sebastian.robitzsch@interdigital.com>
  *
+ *  IGMP Handler extensions added on: 12 Jul 2017
+ *      Author: Xenofon Vasilakos <xvas@aueb.gr>
+ *
  * This file is part of Blackadder.
  *
  * Blackadder is free software: you can redistribute it and/or modify it under
@@ -114,6 +117,96 @@ void IcnId::access()
 {
 	_access();
 }
+
+
+IcnId* IcnId::createIGMPDataScopeId(IpAddress* ipAddress) {
+    IcnId* tmp = new IcnId();
+
+    ostringstream oss;
+    //oss << setw(16) << setfill('0') << NAMESPACE_IGMP_ROOT;
+    oss << setw(16) << setfill('0') << NAMESPACE_IGMP_DATA;
+    if (ipAddress != NULL) {
+        oss << setw(16) << setfill('0') << ipAddress->uint();
+    }
+    tmp->_icnIdString = string(oss.str());
+
+    tmp->_hashIcnId();
+    tmp->_setRootNamespace();
+   
+	tmp->fidRequested(false);
+	tmp->forwarding(false);
+	tmp->pausing(false);
+
+    return tmp;
+}
+
+IcnId* IcnId::createIGMPCtrlScopeId(IpAddress* ipAddress) {
+    IcnId* tmp = new IcnId();
+
+    ostringstream oss;
+    //oss << setw(16) << setfill('0') << NAMESPACE_IGMP_ROOT;
+    oss << setw(16) << setfill('0') << NAMESPACE_IGMP_CTRL;
+    if (ipAddress != NULL) {
+        oss << setw(16) << setfill('0') << ipAddress->uint();
+    }
+    tmp->_icnIdString = string(oss.str());
+
+    tmp->_hashIcnId();
+    tmp->_setRootNamespace();
+    
+	tmp->fidRequested(false);
+	tmp->forwarding(false);
+	tmp->pausing(false);
+
+    return tmp;
+}
+
+IcnId* IcnId::createIGMPCtrlFromDataScopeId(IcnId dataId) {
+    IcnId* tmp = new IcnId();
+
+    ostringstream oss;
+    //oss << setw(16) << setfill('0') << NAMESPACE_IGMP_ROOT;
+    oss << setw(16) << setfill('0') << NAMESPACE_IGMP_CTRL;
+    oss << setw(16) << setfill('0') << dataId._icnIdString.substr(16, 16);
+
+    tmp->_icnIdString = string(oss.str());
+
+    tmp->_hashIcnId();
+    tmp->_setRootNamespace();
+    
+	tmp->fidRequested(false);
+	tmp->forwarding(false);
+	tmp->pausing(false);
+
+    return tmp;
+}
+
+IpAddress IcnId::extractIPAddrFromCId(IcnId cId) {
+    uint32_t addr = atoi(cId._icnIdString.substr(16, 16).c_str());
+    IpAddress  tmp = IpAddress(addr);
+    return tmp;
+}
+
+IcnId* IcnId::createIGMPDataFromCtrlScopeId(IcnId ctrlId) {
+    IcnId* tmp = new IcnId();
+
+    ostringstream oss;
+    //oss << setw(16) << setfill('0') << NAMESPACE_IGMP_ROOT;
+    oss << setw(16) << setfill('0') << NAMESPACE_IGMP_DATA;
+    oss << setw(16) << setfill('0') << ctrlId._icnIdString.substr(16, 16);
+
+    tmp->_icnIdString = string(oss.str());
+
+    tmp->_hashIcnId();
+    tmp->_setRootNamespace();
+   
+	tmp->fidRequested(false);
+	tmp->forwarding(false);
+	tmp->pausing(false);
+
+    return tmp;
+}
+
 
 const string IcnId::binEmpty()
 {

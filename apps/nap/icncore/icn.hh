@@ -4,6 +4,9 @@
  *  Created on: 25 Apr 2016
  *      Author: Sebastian Robitzsch <sebastian.robitzsch@interdigital.com>
  *
+ *  IGMP Handler extensions added on: 12 Jul 2017
+ *      Author: Xenofon Vasilakos <xvas@aueb.gr>
+ *
  * This file is part of Blackadder.
  *
  * Blackadder is free software: you can redistribute it and/or modify it under

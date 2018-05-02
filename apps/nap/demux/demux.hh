@@ -4,6 +4,9 @@
  *  Created on: 19 Apr 2015
  *      Author: Sebastian Robitzsch <sebastian.robitzsch@interdigital.com>
  *
+ *  IGMP Handler extensions added on: 12 Jul 2017
+ *      Author: Xenofon Vasilakos <xvas@aueb.gr>
+ *
  * This file is part of Blackadder.
  *
  * Blackadder is free software: you can redistribute it and/or modify it under
@@ -24,6 +27,7 @@
 
 #include <arpa/inet.h>
 #include <log4cxx/logger.h>
+#include <netinet/igmp.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>
 #include <netinet/tcp.h>

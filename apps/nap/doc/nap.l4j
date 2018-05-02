@@ -4,7 +4,7 @@
 # Author: Sebastian Robitzsch <sebastian.robitzsch@interdigital.com>
 #
 ################################################################################
-# Set the root logger to TRACE and allow stdout and file logging
+# Set the root logger to INFO and allow stdout and file logging
 log4j.rootLogger=info, stdout, R
 
 ################################################################################
@@ -28,6 +28,7 @@ log4j.appender.R.layout.ConversionPattern = %d %5p %C::%M() %m%n
 #
 # Possible debugging levels:
 # FATAL
+# ERROR
 # WARN
 # INFO
 # DEBUG

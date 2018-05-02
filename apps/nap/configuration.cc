@@ -36,6 +36,12 @@ Configuration::Configuration()
 	_httpProxyPort = 3127; // port
 	_icnGatewayHttp = false;
 	_icnGatewayIp = false;
+	_igmp_genQueryTimer = 0;
+	_igmpHandler = false;
+	_igmp_redundantIGMP = 0;
+	_igmp_genLeaveTimer = 0;
+	_igmp_dropAfterQueriesNum = 0;
+	_igmp_message_processing_lag = 0;
 	_ltpInitialCredit = 10; // segments, not bytes
 	_ltpRttListSize = 10; // Default
 	_ltpRttMultiplier = 2;
@@ -144,6 +150,66 @@ uint32_t Configuration::icnHeaderLength()
 	return 20;//FIXME obtain the exact number (through MAPI maybe?)
 }
 
+bool Configuration::igmpHandler()
+{
+	return _igmpHandler;
+}
+
+string Configuration::igmp_genQueryIP()
+{
+	return _igmp_genQueryIP;
+}
+
+string Configuration::igmp_groupLeaveIP()
+{
+	return _igmp_groupLeaveIP;
+}
+
+uint32_t Configuration::igmp_genQueryTimer()
+{
+	return _igmp_genQueryTimer;
+}
+
+uint32_t Configuration::igmp_genLeaveTimer()
+{
+	return _igmp_genLeaveTimer;
+}
+
+uint16_t Configuration::igmp_redundantIGMP()
+{
+	return _igmp_redundantIGMP;
+}
+
+uint32_t Configuration::igmp_dropAfterQueriesNum()
+{
+	return _igmp_dropAfterQueriesNum;
+}
+
+string Configuration::igmp_sNapMCastIPs()
+{
+	return _igmp_sNapMCastIPs;
+}
+
+string Configuration::igmp_ignoreIGMPFrom()
+{
+	return _igmp_ignoreIGMPFrom;
+}
+
+string Configuration::igmp_ignoreMCastDataFrom()
+{
+	return _igmp_ignoreMCastDataFrom;
+}
+
+string Configuration::igmp_napOperationMode()
+{
+	return _igmp_napOperationMode;
+}
+
+uint32_t Configuration::igmp_message_processing_lag()
+{
+	return _igmp_message_processing_lag;
+}
+
 IpAddress Configuration::endpointIpAddress()
 {
 	return _endpointIpAddress;
@@ -193,7 +259,7 @@ uint16_t Configuration::httpProxyPort()
 	return _httpProxyPort;
 }
 
-uint16_t Configuration::ltpInitialCredit()
+uint32_t Configuration::ltpInitialCredit()
 {
 	return _ltpInitialCredit;
 }
@@ -681,6 +747,88 @@ bool Configuration::parse(string file)
 			_socketType = RAWIP;
 			LOG4CXX_TRACE(logger, "Socket type is RAWIP");
 		}
+		
+		/**
+		 * IGMP handler params
+		 */ 
+		if (napConfig.lookupValue("igmpHandler", _igmpHandler))
+		{
+			if (_igmpHandler)
+			{
+				LOG4CXX_TRACE(logger, "IGMP handler enabled ");
+			}
+		}
+
+		if (napConfig.lookupValue("igmp_groupLeaveIP", _igmp_groupLeaveIP))
+		{
+			LOG4CXX_TRACE(logger, "IGMP handler igmp_groupLeaveIP: "
+					<< _igmp_groupLeaveIP);
+		}
+
+		if (napConfig.lookupValue("igmp_genQueryIP", _igmp_genQueryIP))
+		{
+			LOG4CXX_TRACE(logger, "IGMP handler igmp_genQueryIP: "
+					<< _igmp_genQueryIP);
+		}
+
+		if (napConfig.lookupValue("igmp_genQueryTimer", _igmp_genQueryTimer))
+		{
+			LOG4CXX_TRACE(logger, "IGMP handler igmp_genQueryTimer: "
+					<<_igmp_genQueryTimer);
+		}
+
+		if (napConfig.lookupValue("igmp_genLeaveTimer", _igmp_genLeaveTimer))
+		{
+			LOG4CXX_TRACE(logger, "IGMP handler igmp_genLeaveTimer: "
+					<< _igmp_genLeaveTimer);
+		}
+
+		if (napConfig.lookupValue("igmp_redundantIGMP", _igmp_redundantIGMP))
+		{
+			LOG4CXX_TRACE(logger, "IGMP handler igmp_redundantIGMP: "
+					<< _igmp_redundantIGMP);
+		}
+
+		if (napConfig.lookupValue("igmp_dropAfterQueriesNum",
+				_igmp_dropAfterQueriesNum))
+		{
+			LOG4CXX_TRACE(logger, "IGMP handler igmp_dropAfterQueriesNum: "
+					<< _igmp_dropAfterQueriesNum);
+		}
+
+		if (napConfig.lookupValue("igmp_sNapMCastIPs", _igmp_sNapMCastIPs))
+		{
+			LOG4CXX_TRACE(logger, "IGMP handler igmp_sNapMCastIPs: "
+					<< _igmp_sNapMCastIPs);
+		}
+
+		if (napConfig.lookupValue("igmp_ignoreIGMPFrom", _igmp_ignoreIGMPFrom))
+		{
+			LOG4CXX_TRACE(logger, "IGMP handler igmp_ignoreIGMPFrom: "
+					<< _igmp_ignoreIGMPFrom);
+		}
+
+		if (napConfig.lookupValue("igmp_ignoreMCastDataFrom",
+				_igmp_ignoreMCastDataFrom))
+		{
+			LOG4CXX_TRACE(logger, "IGMP handler igmp_ignoreMCastDataFrom: "
+					<<_igmp_ignoreMCastDataFrom);
+		}
+
+		if (napConfig.lookupValue("igmp_napOperationMode",
+				_igmp_napOperationMode))
+		{
+			LOG4CXX_TRACE(logger, "IGMP handler igmp_napOperationMode: "
+					<< _igmp_napOperationMode);
+		}
+
+		if (napConfig.lookupValue("igmp_message_processing_lag",
+				_igmp_message_processing_lag))
+		{
+			LOG4CXX_TRACE(logger, "IGMP handler igmp_message_processing_lag "
+					<< _igmp_message_processing_lag);
+		}
+
 	}
 	catch(const SettingNotFoundException &nfex)
 	{

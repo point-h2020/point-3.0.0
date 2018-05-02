@@ -13,6 +13,7 @@ OBJS =	api/napsa.o \
 		monitoring/statistics.o \
 		namespaces/namespaces.o \
 		namespaces/ip.o \
+		namespaces/mcast.o \
 		namespaces/http.o \
 		namespaces/management.o \
 		namespaces/management/dnslocal.o \
@@ -44,6 +45,7 @@ OBJS =	api/napsa.o \
 
 LIBS =	-lblackadder \
 		-lboost_program_options \
+		-lboost_thread \
 		-lboost_system \
 		-lconfig++ \
 		-llog4cxx \

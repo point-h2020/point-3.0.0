@@ -86,12 +86,14 @@ bool DnsResolutions::resolve(string fqdn, IpAddress &ipAddress)
 {
 	struct hostent *dnsResponse;
 	uint32_t dnsTimeToLive = 1200;//[s]
+
+	LOG4CXX_ASSERT(logger, fqdn.length() == 0, "FQDN is empty");
 	dnsResponse = gethostbyname(fqdn.c_str());
 
 	if (dnsResponse == NULL)
 	{
 		LOG4CXX_DEBUG(logger, "IP address could not be resolved for "
-				"FQDN " << fqdn);
+				"FQDN '" << fqdn << "'");
 
 		switch (h_errno)
 		{
@@ -99,9 +101,14 @@ bool DnsResolutions::resolve(string fqdn, IpAddress &ipAddress)
 			LOG4CXX_DEBUG(logger, "FQDN " << fqdn << " is unknown to "
 					"DNS");
 			break;
+		case NO_DATA:
+			LOG4CXX_DEBUG(logger, "DNS server return error code NO_DATA (Valid "
+					"name, no data record of requested type) for FQDN '" << fqdn
+					<< "'")
+			break;
 		default:
-			LOG4CXX_DEBUG(logger, "IP address for FQDN " << fqdn
-					<< " could not be found. Error code: " << h_errno);
+			LOG4CXX_DEBUG(logger, "IP address for FQDN '" << fqdn
+					<< "' could not be found. Error code: " << h_errno);
 		}
 
 		return false;

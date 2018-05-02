@@ -4,6 +4,9 @@
  *  Created on: 16 Apr 2016
  *      Author: Sebastian Robitzsch <sebastian.robitzsch@interdigital.com>
  *
+ *  IGMP Handler extentions added on: 12 Jul 2017
+ *      Author: Xenofon Vasilakos <xvas@aueb.gr>
+ *
  * This file is part of Blackadder.
  *
  * Blackadder is free software: you can redistribute it and/or modify it under
@@ -25,6 +28,7 @@ Namespaces::Namespaces(Blackadder *icnCore, std::mutex &icnCoreMutex,
 		Configuration &configuration, Transport &transport,
 		Statistics &statistics, bool *run)
 	: Ip(icnCore, configuration, transport, statistics, run),
+	  MCast(icnCore, configuration, transport, statistics, run),
 	  Http(icnCore, configuration, transport, statistics, run),
 	  Management(icnCore, icnCoreMutex, configuration),
 	  _configuration(configuration)
@@ -54,6 +58,10 @@ void Namespaces::forwarding(IcnId &cId, bool state)
 	case NAMESPACE_IP:
 		Ip::forwarding(cId, state);
 		break;
+    case NAMESPACE_IGMP_CTRL:
+    case NAMESPACE_IGMP_DATA:
+        MCast::forwarding(cId, state);
+        break;
 	case NAMESPACE_HTTP:
 		Http::forwarding(cId, state);
 		break;
@@ -80,10 +88,10 @@ void Namespaces::handlePublishedData(IcnId &cid, void *data, uint32_t &dataSize)
 	}
 }
 
-void Namespaces::initialise()
-{
-	Ip::initialise();
-	Http::initialise();
+void Namespaces::initialise() {
+    Ip::initialise();
+    MCast::initialise();
+    Http::initialise();
 }
 
 void Namespaces::publishFromBuffer(IcnId &cid)
@@ -115,14 +123,16 @@ void Namespaces::sendToEndpoint(IcnId &rCid, enigma_t &enigma,
 	}
 }
 
-void Namespaces::subscribeScope(IcnId &icnId)
-{
-	switch (icnId.rootNamespace())
-	{
-	case NAMESPACE_IP:
-		Ip::subscribeScope(icnId);
-		break;
-	}
+void Namespaces::subscribeScope(IcnId &icnId) {
+    switch (icnId.rootNamespace()) {
+        case NAMESPACE_IP:
+            Ip::subscribeScope(icnId);
+            break;
+        case NAMESPACE_IGMP_CTRL:
+        case NAMESPACE_IGMP_DATA:
+            MCast::subscribeScope(icnId);
+            break;
+    }
 }
 
 void Namespaces::surrogacy(root_namespaces_t rootNamespace, uint32_t hashedFqdn,

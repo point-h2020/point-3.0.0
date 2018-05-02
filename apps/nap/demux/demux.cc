@@ -4,6 +4,9 @@
  *  Created on: 19 Apr 2015
  *      Author: Sebastian Robitzsch <sebastian.robitzsch@interdigital.com>
  *
+ *  IGMP Handler extensions added on: 12 Jul 2017
+ *      Author: Xenofon Vasilakos <xvas@aueb.gr>
+ *
  * This file is part of Blackadder.
  *
  * Blackadder is free software: you can redistribute it and/or modify it under the
@@ -25,6 +28,7 @@ using namespace configuration;
 using namespace demux;
 using namespace log4cxx;
 using namespace namespaces::ip;
+using namespace namespaces::mcast;
 
 LoggerPtr Demux::logger(Logger::getLogger("demux"));
 
@@ -54,8 +58,10 @@ void Demux::operator()() {
 	// 1||0: promiscuous mode en-/disabled
 	// 0: Readout time delay to decrease CPU load (adds delay if not 0!)
 	// errbuf: Error string
+	//
+	// Promiscous mode must be enabled for capturing multicast packets
 	_pcapSocket = pcap_open_live(_configuration.networkDevice().c_str(),
-			65535, 0, 0, errbuf);
+			65535, 1, 0, errbuf);
 
 	if (_pcapSocket == NULL)
 	{
@@ -257,6 +263,7 @@ void Demux::_processPacket(const struct pcap_pkthdr *header,
 		destinationIpAddress = ipHeader->ip_dst.s_addr;
 		int ttl = ipHeader->ip_ttl;
 		int ipHeaderLength = 4 * ipHeader->ip_hl;
+		uint16_t ipPacketSize = ntohs(ipHeader->ip_len);
 		LOG4CXX_TRACE(logger, "IP packet received with header: "
 				<< "SRC: " << sourceIpAddress.str()
 				<< "\tDST: " << destinationIpAddress.str()
@@ -265,7 +272,7 @@ void Demux::_processPacket(const struct pcap_pkthdr *header,
 				<< "\tTTL: " << ttl
 				<< "\tFlags: " << htons(ipHeader->ip_off)
 				<< "\tIP HL: " << ipHeaderLength
-				<< "\tPayload Length: " << ntohs(ipHeader->ip_len));
+				<< "\tIP packet length: " << ntohs(ipHeader->ip_len));
 
 		// Check if IP packet is larger than MTU. If so, send IGMP back to
 		// lower MTU
@@ -306,12 +313,26 @@ void Demux::_processPacket(const struct pcap_pkthdr *header,
 		case IPPROTO_UDP:
 		{
 			struct udphdr *udpHeader;
+			int pref;
 			udpHeader = (struct udphdr *)packet;
-			LOG4CXX_TRACE(logger, "UDP Header: "
-					<< "Src port:" << ntohs(udpHeader->source)
-					<< " -> Dst port: " << ntohs(udpHeader->dest));
-			break;
-		}
+            LOG4CXX_TRACE(logger, "UDP Header: "
+                << "Src port:" << ntohs(udpHeader->source)
+                << " -> Dst port: " << ntohs(udpHeader->dest));
+
+            // check for multicast destination address and handle
+            const char * addrCharArr = destinationIpAddress.str().c_str();
+            sscanf(addrCharArr, "%d.", &pref);
+
+            if (pref > 223 && pref < 240)
+            {
+                packet -= 4 * ipHeader->ip_hl; // reverse skipped IP header
+                _namespaces.MCast::handleMcastDataAtSNap(sourceIpAddress,
+                		destinationIpAddress, (uint8_t *) packet, ipPacketSize);
+                return;
+            }
+
+            break;
+        }
 		case IPPROTO_ICMP:
 		{
 			struct icmphdr *icmpHeader;
@@ -323,8 +344,22 @@ void Demux::_processPacket(const struct pcap_pkthdr *header,
 					<< "Seq: " << ntohs(icmpHeader->un.echo.sequence)
 					);
 			break;
-		}
-		case IPPROTO_RAW:
+        }
+        case IPPROTO_IGMP:
+        {
+          struct igmp *igmpHdr;
+          igmpHdr = (struct igmp *) packet;
+
+          LOG4CXX_DEBUG(logger, "IGMP Header: "
+              << "Type: " << ntohs(igmpHdr->igmp_type) << " |"
+              << " Code: " << ntohs(igmpHdr->igmp_code) << " |"
+              << " Checksum: " << ntohs(igmpHdr->igmp_cksum)
+              );
+          _namespaces.MCast::handle(sourceIpAddress, destinationIpAddress,
+        		  (uint8_t *) packet);
+          return;
+        }
+        case IPPROTO_RAW:
 		{
 			LOG4CXX_TRACE(logger, "RAW IP packet received. "
 					<< "No Layer 4 Header available");
@@ -333,9 +368,8 @@ void Demux::_processPacket(const struct pcap_pkthdr *header,
 		}
 
 		packet -= 4 * ipHeader->ip_hl;
-		uint16_t packetSize = header->len - _linkHdrLen;
 		_namespaces.Ip::handle(destinationIpAddress, (uint8_t *)packet,
-				packetSize);
+				ipPacketSize);
 	}
 	// IPv6 packet
 	else if (ntohs(eptr->ether_type) == ETHERTYPE_IPV6)

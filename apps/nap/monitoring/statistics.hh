@@ -249,6 +249,58 @@ public:
 	 * \param txBytes The number of transmitted bytes
 	 */
 	void txIpBytes(int *txBytes);
+    /*!
+     * \brief the counted channelAcquisitionTime over the configured reporting
+     * interval
+     *
+     * \return the counted channelAcquisitionTime over the configured reporting
+     * interval
+     */
+    uint32_t averageChannelAcquisitionTime();
+    /*!
+     * \brief the counted number of bytes over the configured reporting
+     * interval
+     *
+     * \return the counted number of bytes over the configured reporting
+     * interval
+     */
+    uint32_t counterRxIGMPBytes();
+    /*!
+     * \brief the counted number of bytes over the configured reporting
+     * interval
+     *
+     * \return the counted number of bytes over the configured reporting
+     * interval
+     */
+    uint32_t counterTxIGMPBytes();
+    /*!
+     * \brief Update the channelAcquisitionTime for a multicast group address, 
+     * i.e. the duration between  the time after joining a multicast address from a cNAP and 
+     * the time that multicast data start to be multicast to the UEs 
+     * connected to the cNAP. 
+     * 
+     * 
+     * \param mcastGrpAddr the multicast groupo address in uint32_t format
+     * \param channelAcquisitionTime channelAcquisitionTime x 10000
+     */
+    void channelAcquisitionTime(uint32_t mcastGrpAddr, uint32_t channelAcquisitionTime);
+    /*!
+     * \brief Update the mcastIpPacketsIn counter, i.e. the number of incoming 
+     * multicast packets in a sNAP.
+     *
+     * \param mcastIpPacketsIn The number of packets in recorded
+     */
+    void rxIGMPBytes(uint32_t _rxBytes);
+    /*!
+     * \brief Update the mcastIpPacketsOut counter, i.e. the number of 
+     * "outgoing multicast packets" from an sNAP. 
+     * 
+     * In essence, this is the number of incoming packets to cNAPs as 
+     * a result of one outgoing packet publication by an sNAP.
+     *
+     * \param mcastIpPacketsOut The number of packets out recorded
+     */
+    void txIGMPBytes(uint32_t _txBytes);
 private:
 	std::mutex _mutex;
 	pair<uint32_t, uint32_t> _bufferSizeHttpHandlerRequests;/*!< pair<sum of
@@ -279,6 +331,10 @@ private:
 	HTTP handler from IP endpoints */
 	uint32_t _txIpBytes;/*!< Counting the number of bytes transmitted in the IP
 	handler from IP endpoints */
+	unordered_map<uint32_t, uint32_t>::iterator _channelAcquisitionTimeIt; /*!< Channel Acquisition Time (expected as x10000 in seconds) in a cNAP*/
+	unordered_map<uint32_t, uint32_t> _channelAcquisitionTime; /*!< Channel Acquisition Time (expected as x10000 in seconds) in a cNAP*/
+	uint32_t _rxIGMPBytes; /*!< number of incoming bytes in a sNAP*/
+	uint32_t _txIGMPBytes; /*!< number of incoming bytes in a sNAP*/
 };
 
 } /* namespace statistics */

@@ -4,6 +4,9 @@
  *  Created on: 25 Apr 2016
  *      Author: Sebastian Robitzsch <sebastian.robitzsch@interdigital.com>
  *
+ *  IGMP Handler extensions added on: 12 Jul 2017
+ *      Author: Xenofon Vasilakos <xvas@aueb.gr>
+ *
  * This file is part of Blackadder.
  *
  * Blackadder is free software: you can redistribute it and/or modify it under
@@ -80,25 +83,28 @@ void Icn::operator ()()
 		 * Scope published
 		 */
 		case SCOPE_PUBLISHED:
-			LOG4CXX_DEBUG(logger, "SCOPE_PUBLISHED received for ICN ID "
-					<< icnId.print());
+			LOG4CXX_DEBUG(logger, "SCOPE_PUBLISHED received for ICN ID "<< icnId.print());
 			_namespaces.subscribeScope(icnId);
 			break;
 		/*
 		 * Scope unpublished
 		 */
 		case SCOPE_UNPUBLISHED:
-			LOG4CXX_DEBUG(logger, "SCOPE_UNPUBLISHED received for ICN ID "
-					<< icnId.print());
+			LOG4CXX_DEBUG(logger, "SCOPE_UNPUBLISHED received for ICN ID "<< icnId.print());
 			break;
 		/*
 		 * Start publish
 		 */
 		case START_PUBLISH:
 		{
-			LOG4CXX_DEBUG(logger, "START_PUBLISH received for CID "
-					<< icnId.print());
+			LOG4CXX_DEBUG(logger, "START_PUBLISH received for CID " << icnId.print());
 			_namespaces.forwarding(icnId, true);
+			//YT: this should be part of mcast::forwarding
+		    if (icnId.rootNamespace() == NAMESPACE_IGMP_CTRL || icnId.rootNamespace() == NAMESPACE_IGMP_DATA) {
+		        _namespaces.handleSTART_PUBLISH(icnId);
+		        break;
+		    }
+
 			_namespaces.publishFromBuffer(icnId);
 			break;
 		}
@@ -110,6 +116,12 @@ void Icn::operator ()()
 			NodeId nodeId = event.id;
 			LOG4CXX_DEBUG(logger, "START_PUBLISH_iSUB received for NID "
 					<< nodeId.uint());
+
+		        if (rCId.rootNamespace() == NAMESPACE_IGMP_CTRL || rCId.rootNamespace() == NAMESPACE_IGMP_DATA) {
+		            _namespaces.handleSTART_PUBLISH_iSUB(rCId);
+		            break;
+		        }
+
 			_namespaces.forwarding(nodeId, true);
 			//_namespaces.publishFromBuffer(nodeId);//should be always empty
 			break;
@@ -141,6 +153,14 @@ void Icn::operator ()()
 			uint16_t sessionKey = 0;
 			LOG4CXX_TRACE(logger, "PUBLISHED_DATA of length " << event.data_len
 					<< " received under (r)CID " << icnId.print());
+
+			if (icnId.rootNamespace() == NAMESPACE_IGMP_DATA ||
+					icnId.rootNamespace() == NAMESPACE_IGMP_CTRL)
+			{
+		        _namespaces.handlePUBLISHED_DATA(icnId, &event);
+		        break;
+		    }
+
 			tp_states_t tpState = _transport.handle(icnId, event.data,
 					dataLength, enigma, sessionKey);
 
@@ -185,6 +205,12 @@ void Icn::operator ()()
 			LOG4CXX_TRACE(logger, "PUBLISHED_DATA_iSUB received for CID "
 						<< icnId.print() << " and rCID " << rCId.print()
 						<< " of length " << event.data_len);
+
+	                if (rCId.rootNamespace() == NAMESPACE_IGMP_DATA || rCId.rootNamespace() == NAMESPACE_IGMP_CTRL) {
+	                    _namespaces.handlePUBLISHED_DATA_iSUB(rCId, &event);
+	                    break;
+	                }
+
 			// add NID > rCID look up to HTTP handler so when START_PUBLISH_iSUB
 			// arrives the corresponding rCID can be looked up
 			_namespaces.Http::addReversNidTorCIdLookUp(event.nodeId, rCId);
@@ -248,9 +274,14 @@ void Icn::operator ()()
 			LOG4CXX_DEBUG(logger, "RESUME_PUBLISH received for CID "
 						<< icnId.print());
 			break;
+		case CONTROL_REQ_FAILURE:
+			LOG4CXX_ERROR(logger, "CONTROL_REQ_FAILURE received for CID "
+					<< icnId.print() << " (local BA cannot reach domain-local "
+							"RV)");
+			break;
 		default:
 			LOG4CXX_WARN(logger, "Unknown BA API event type received: "
-					<< event.type);
+					<< (uint16_t)event.type);
 		}
 	}
 

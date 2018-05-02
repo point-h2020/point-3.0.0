@@ -4,6 +4,9 @@
  *  Created on: 16 Apr 2016
  *      Author: Sebastian Robitzsch <sebastian.robitzsch@interdigital.com>
  *
+ *  IGMP Handler extensions added on: 12 Jul 2017
+ *      Author: Xenofon Vasilakos <xvas@aueb.gr>
+ *
  * This file is part of Blackadder.
  *
  * Blackadder is free software: you can redistribute it and/or modify it under
@@ -28,6 +31,7 @@
 #include <configuration.hh>
 #include <monitoring/statistics.hh>
 #include <namespaces/ip.hh>
+#include <namespaces/mcast.hh>
 #include <namespaces/http.hh>
 #include <namespaces/management.hh>
 
@@ -37,6 +41,7 @@
 
 using namespace monitoring::statistics;
 using namespace namespaces::ip;
+using namespace namespaces::mcast;
 using namespace namespaces::http;
 using namespace namespaces::management;
 using namespace transport;
@@ -44,7 +49,7 @@ using namespace transport;
 /*!
  * \brief Parent namespace class for all root scopes
  */
-class Namespaces: public Ip, public Http, public Management
+class Namespaces: public Ip, public MCast,  public Http, public Management
 {
 public:
 	/*!

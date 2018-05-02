@@ -172,6 +172,78 @@ namespace configuration {
 		 */
 		uint32_t icnHeaderLength();
 		/*!
+		 * \brief TODO
+		 *
+		 * \return TODO
+		 */
+		bool igmpHandler();
+		/*!
+		 * \brief TODO
+		 *
+		 * \return TODO
+		 */
+		string igmp_genQueryIP();
+		/*!
+		 * \brief TODO
+		 *
+		 * \return TODO
+		 */
+		string igmp_groupLeaveIP();
+		/*!
+		 * \brief TODO
+		 *
+		 * \return TODO
+		 */
+		uint32_t igmp_genQueryTimer();
+		/*!
+		 * \brief TODO
+		 *
+		 * \return TODO
+		 */
+		uint32_t igmp_genLeaveTimer();
+		/*!
+		 * \brief TODO
+		 *
+		 * \return TODO
+		 */
+		uint16_t igmp_redundantIGMP();
+		/*!
+		 * \brief TODO
+		 *
+		 * \return TODO
+		 */
+		uint32_t igmp_dropAfterQueriesNum();
+		/*!
+		 * \brief TODO
+		 *
+		 * \return TODO
+		 */
+		string igmp_sNapMCastIPs();
+		/*!
+		 * \brief TODO
+		 *
+		 * \return TODO
+		 */
+		string igmp_ignoreIGMPFrom();
+		/*!
+		 * \brief TODO
+		 *
+		 * \return TODO
+		 */
+		string igmp_ignoreMCastDataFrom();
+		/*!
+		 * \brief TODO
+		 *
+		 * \return TODO
+		 */
+		string igmp_napOperationMode();
+		/*!
+		 * \brief TODO
+		 *
+		 * \return TODO
+		 */
+		uint32_t igmp_message_processing_lag();
+		/*!
 		 * \param ipAddress The IP address in human readable format (dot
 		 * notation, e.g. 172.16.23.1)
 		 */
@@ -188,7 +260,7 @@ namespace configuration {
 		 *
 		 * \return The initial credit for each LTP session
 		 */
-		uint16_t ltpInitialCredit();
+		uint32_t ltpInitialCredit();
 		/*!
 		 * \brief Obtain the desired size of the LTP RTT size
 		 *
@@ -352,6 +424,18 @@ namespace configuration {
 		Internet access. IP-over-ICN will have the wildcard */
 		RoutingPrefix _icnGatewayRoutingPrefix;/*!< Routing prefix of the ICN GW
 		if set */
+		bool _igmpHandler;/*!< TODO */
+		string _igmp_genQueryIP;/*!< TODO */
+		string _igmp_groupLeaveIP;/*!< TODO */
+		unsigned int _igmp_genQueryTimer;/*!< TODO */
+		unsigned int _igmp_genLeaveTimer;/*!< TODO */
+		unsigned int _igmp_redundantIGMP;/*!< TODO */
+		unsigned int _igmp_dropAfterQueriesNum;/*!< TODO */
+		string _igmp_sNapMCastIPs; /*!< TODO */
+		string _igmp_ignoreIGMPFrom; /*!< TODO */
+		string _igmp_ignoreMCastDataFrom;/*!< TODO */
+		string _igmp_napOperationMode;/*!< TODO */
+		unsigned int _igmp_message_processing_lag;/*!< TODO */
 		IpAddress _ipAddress;/*!< The IP address of _device*/
 		bool _hostBasedNap; /*!< Is this NAP configured as in host-based
 		scenario */

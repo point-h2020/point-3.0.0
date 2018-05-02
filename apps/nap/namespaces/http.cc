@@ -373,7 +373,10 @@ bool Http::handleResponse(IcnId rCId, enigma_t enigma,	sk_t &sessionKey,
 	uint8_t attempts = ENIGMA;
 	list<NodeId> cmcGroup;
 
-	while (cmcGroup.empty())
+	LOG4CXX_ASSERT(logger, rCId.str().length() == 0, "rCID is empty. CMC group "
+			"cannot be identified");
+
+	while (cmcGroup.empty() && rCId.str().length() != 0)
 	{
 		cmcGroup.clear();
 
