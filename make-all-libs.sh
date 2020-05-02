@@ -295,150 +295,150 @@ else
 	echo -e "\t\t\t\tok"
 fi
 
-### NAP
-echo -ne "Compile NAP"
-cd $DIR/apps/nap
-make clean > /dev/null
+# ### NAP
+# echo -ne "Compile NAP"
+# cd $DIR/apps/nap
+# make clean > /dev/null
 
-if [ $? -ne 0 ]; then
-	exit 1
-fi
+# if [ $? -ne 0 ]; then
+# 	exit 1
+# fi
 
-make -j$CORES > /dev/null
+# make -j$CORES > /dev/null
 
-if [ $? -ne 0 ]; then
-	exit 1
-else
-	echo -e "\t\t\t\tok"
-fi
+# if [ $? -ne 0 ]; then
+# 	exit 1
+# else
+# 	echo -e "\t\t\t\tok"
+# fi
 
-echo -ne "Install NAP"
-sudo make install > /dev/null
+# echo -ne "Install NAP"
+# sudo make install > /dev/null
 
-if [ $? -ne 0 ]; then
-	exit 1
-else
-	echo -e "\t\t\t\tok"
-fi
+# if [ $? -ne 0 ]; then
+# 	exit 1
+# else
+# 	echo -e "\t\t\t\tok"
+# fi
 
-# Topology manager
-cd $DIR/TopologyManager/
-make clean > /dev/null
+# # Topology manager
+# cd $DIR/TopologyManager/
+# make clean > /dev/null
 
-if [ $? -ne 0 ]; then
-	exit 1
-fi
+# if [ $? -ne 0 ]; then
+# 	exit 1
+# fi
 
-echo -ne "Compile TM"
-make > /dev/null
+# echo -ne "Compile TM"
+# make > /dev/null
 
-if [ $? -ne 0 ]; then
-	exit 1
-else
-	echo -e "\t\t\t\tok"
-fi
+# if [ $? -ne 0 ]; then
+# 	exit 1
+# else
+# 	echo -e "\t\t\t\tok"
+# fi
 
-# Examples
-echo -ne "Compile MOLY Examples\t"
-cd $DIR/examples/moly/
-make clean > /dev/null
+# # Examples
+# echo -ne "Compile MOLY Examples\t"
+# cd $DIR/examples/moly/
+# make clean > /dev/null
 
-if [ $? -ne 0 ]; then
-	exit 1
-fi
+# if [ $? -ne 0 ]; then
+# 	exit 1
+# fi
 
-make -j$CORES > /dev/null
+# make -j$CORES > /dev/null
 
-if [ $? -ne 0 ]; then
-	exit 1
-else
-	echo -e "\t\tok"
-fi
+# if [ $? -ne 0 ]; then
+# 	exit 1
+# else
+# 	echo -e "\t\tok"
+# fi
 
-cd $DIR/examples/samples
-make clean > /dev/null
+# cd $DIR/examples/samples
+# make clean > /dev/null
 
-if [ $? -ne 0 ]; then
-	exit 1
-fi
+# if [ $? -ne 0 ]; then
+# 	exit 1
+# fi
 
-make -j$CORES > /dev/null
+# make -j$CORES > /dev/null
 
-echo -ne "Compile traffic enginnering examples"
-cd $DIR/examples/traffic_engineering/
-make clean > /dev/null
+# echo -ne "Compile traffic enginnering examples"
+# cd $DIR/examples/traffic_engineering/
+# make clean > /dev/null
 
-if [ $? -ne 0 ]; then
-	exit 1
-fi
+# if [ $? -ne 0 ]; then
+# 	exit 1
+# fi
 
-make -j$CORES > /dev/null
+# make -j$CORES > /dev/null
 
-if [ $? -ne 0 ]; then
-	exit 1
-else
-	echo -e "\tok"
-fi
+# if [ $? -ne 0 ]; then
+# 	exit 1
+# else
+# 	echo -e "\tok"
+# fi
 
-echo -ne "Compile bandwidth measurement tool"
-./makeBandwidth.sh > /dev/null
+# echo -ne "Compile bandwidth measurement tool"
+# ./makeBandwidth.sh > /dev/null
 
-if [ $? -ne 0 ]; then
-	exit 1
-else
-	echo -e "\tok"
-fi
+# if [ $? -ne 0 ]; then
+# 	exit 1
+# else
+# 	echo -e "\tok"
+# fi
 
-echo -ne "Compile video streaming example"
-cd $DIR/examples/video_streaming/
-make clean > /dev/null
+# echo -ne "Compile video streaming example"
+# cd $DIR/examples/video_streaming/
+# make clean > /dev/null
 
-if [ $? -ne 0 ]; then
-	exit 1
-fi
+# if [ $? -ne 0 ]; then
+# 	exit 1
+# fi
 
-make -j$CORES > /dev/null
+# make -j$CORES > /dev/null
 
-if [ $? -ne 0 ]; then
-	exit 1
-else
-	echo -e "\t\tok"
-fi
+# if [ $? -ne 0 ]; then
+# 	exit 1
+# else
+# 	echo -e "\t\tok"
+# fi
 
-echo -ne "Compile surrogacy example"
-cd $DIR/examples/surrogacy
-make > /dev/null
+# echo -ne "Compile surrogacy example"
+# cd $DIR/examples/surrogacy
+# make > /dev/null
 
-if [ $? -ne 0 ]; then
-	exit 1
-else
-	echo -e "\t\tok"
-fi
+# if [ $? -ne 0 ]; then
+# 	exit 1
+# else
+# 	echo -e "\t\tok"
+# fi
 
-cd $DIR/deployment/
-echo -ne "Compile deployment tool"
-make clean > /dev/null
-make > /dev/null
+# cd $DIR/deployment/
+# echo -ne "Compile deployment tool"
+# make clean > /dev/null
+# make > /dev/null
 
-if [ $? -ne 0 ]; then
-	exit 1
-else
-	echo -e "\t\t\tok"
-fi
+# if [ $? -ne 0 ]; then
+# 	exit 1
+# else
+# 	echo -e "\t\t\tok"
+# fi
 
-# ICN-SDN app
-cd $DIR/apps/icn-sdn
-echo -ne "Compile ICN-SDN"
-rm messages/{messages.pb.cc,messages.pb.h} > /dev/null
-pushd messages > /dev/null
-protoc -I=. --cpp_out=. messages.proto > /dev/null
-popd > /dev/null
-make clean > /dev/null
-make > /dev/null
+# # ICN-SDN app
+# cd $DIR/apps/icn-sdn
+# echo -ne "Compile ICN-SDN"
+# rm messages/{messages.pb.cc,messages.pb.h} > /dev/null
+# pushd messages > /dev/null
+# protoc -I=. --cpp_out=. messages.proto > /dev/null
+# popd > /dev/null
+# make clean > /dev/null
+# make > /dev/null
 
-if [ $? -ne 0 ]; then
-        exit 1
-else
-        echo -e "\t\t\t\tok"
-fi
+# if [ $? -ne 0 ]; then
+#         exit 1
+# else
+#         echo -e "\t\t\t\tok"
+# fi
 
